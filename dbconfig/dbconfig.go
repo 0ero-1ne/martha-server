@@ -29,7 +29,16 @@ func connect(config config.Config) {
 }
 
 func migrate() {
-	err := database.AutoMigrate(&models.Author{}, &models.Book{}, &models.Tag{})
+	err := database.AutoMigrate(
+		&models.Author{},
+		&models.Book{},
+		&models.Tag{},
+		&models.User{},
+		&models.Chapter{},
+		&models.Comment{},
+		&models.CommentRate{},
+		&models.BookRate{},
+	)
 
 	if err != nil {
 		panic("Can not migrate models: " + err.Error())

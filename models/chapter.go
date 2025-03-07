@@ -4,10 +4,13 @@ import (
 	"time"
 )
 
-type Tag struct {
+type Chapter struct {
 	Id        uint      `gorm:"primarykey;constraint:OnDelete:CASCADE,OnUpdate:CASCADE" json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"upated_at"`
-	Title     string    `gorm:"uniqueIndex:not null;"`
-	Books     []*Book   `gorm:"many2many:book_tags;constraint:OnDelete:CASCADE,OnUpdate:CASCADE"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	Serial    int       `json:"serial"`
+	Date      time.Time `json:"date"`
+	BookId    uint      `json:"book_id"`
 }
