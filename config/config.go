@@ -1,11 +1,11 @@
 package config
 
-import "gopkg.in/ini.v1"
+import (
+	"gopkg.in/ini.v1"
+)
 
 type Config struct {
-	Database struct {
-		DSN string `ini:"host"`
-	} `ini:"database"`
+	PostgresConfig PostgresConfig `ini:"database.postgres"`
 }
 
 func Init() Config {
