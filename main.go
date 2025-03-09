@@ -2,10 +2,10 @@ package main
 
 import (
 	"server/config"
-	"server/dbconfig"
+	"server/db"
 )
 
 func main() {
 	cfg := config.Init()
-	dbconfig.InitDatabase(cfg)
+	db.InitDatabase(cfg)
 }
