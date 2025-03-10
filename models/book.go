@@ -5,7 +5,7 @@ import "time"
 type Book struct {
 	Id          uint       `gorm:"primarykey;not null;constraint:OnDelete:CASCADE,OnUpdate:CASCADE" json:"id"`
 	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"upated_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
 	Title       string     `json:"title" gorm:"not null;default:null"`
 	Description string     `json:"description" gorm:"not null;default:null"`
 	Status      string     `json:"status" gorm:"not null;default:null"`

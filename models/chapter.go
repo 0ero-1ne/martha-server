@@ -7,7 +7,7 @@ import (
 type Chapter struct {
 	Id        uint      `gorm:"primarykey;not null;constraint:OnDelete:CASCADE,OnUpdate:CASCADE" json:"id"`
 	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"upated_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 	Title     string    `json:"title" gorm:"not null;default:null"`
 	Content   string    `json:"content" gorm:"not null;default:null"`
 	Serial    int       `json:"serial" gorm:"not null;default:null"`
