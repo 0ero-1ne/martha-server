@@ -16,8 +16,9 @@ func main() {
 
 	globalRoute := server.Group("/api/v1")
 	routes.TagRoutes(globalRoute)
+	routes.BookRoutes(globalRoute)
 
-	err := server.Run(":8080")
+	err := server.Run(cfg.ServerConfig.GetAddress())
 
 	if err != nil {
 		panic("Can not start server: " + err.Error())
