@@ -4,6 +4,10 @@ import (
 	"gopkg.in/ini.v1"
 )
 
+type DatabaseConfig interface {
+	GetDSN() string
+}
+
 type Config struct {
 	PostgresConfig PostgresConfig `ini:"database.postgres"`
 }

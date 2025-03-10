@@ -10,7 +10,7 @@ import (
 
 var database *gorm.DB
 
-func InitDatabase(config config.Config) {
+func InitDatabase(config config.DatabaseConfig) {
 	if database != nil {
 		return
 	}
@@ -19,9 +19,9 @@ func InitDatabase(config config.Config) {
 	migrate()
 }
 
-func connect(config config.Config) {
+func connect(config config.DatabaseConfig) {
 	var err error
-	database, err = gorm.Open(postgres.Open(config.PostgresConfig.GetDSN()), &gorm.Config{})
+	database, err = gorm.Open(postgres.Open(config.GetDSN()), &gorm.Config{})
 
 	if err != nil {
 		panic("Can not connect to database: " + err.Error())

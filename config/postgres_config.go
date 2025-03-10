@@ -10,7 +10,7 @@ type PostgresConfig struct {
 	Password string `ini:"password"`
 }
 
-func (postgres *PostgresConfig) GetDSN() string {
+func (postgres PostgresConfig) GetDSN() string {
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s",
 		postgres.Username,
