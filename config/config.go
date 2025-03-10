@@ -10,6 +10,7 @@ type DatabaseConfig interface {
 
 type Config struct {
 	PostgresConfig PostgresConfig `ini:"database.postgres"`
+	ServerConfig   ServerConfig   `ini:"server"`
 }
 
 func Init() Config {
