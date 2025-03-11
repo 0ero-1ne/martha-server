@@ -83,3 +83,52 @@ func (service BookService) Delete(id uint) error {
 
 	return nil
 }
+
+func (service BookService) AddTag(book_id uint, tag_id uint) error {
+	var book models.Book
+	tx := db.GetDB().First(&book, book_id)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	var tag models.Tag
+	tx = db.GetDB().First(&tag, tag_id)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	book.Tags = append(book.Tags, &tag)
+	tx = db.GetDB().Save(&book)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	return nil
+}
+
+func (service BookService) DeleteTag(book_id uint, tag_id uint) error {
+	var book models.Book
+	tx := db.GetDB().First(&book, book_id)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	var tag models.Tag
+	tx = db.GetDB().First(&tag, tag_id)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	err := db.GetDB().Model(&book).Association("Tags").Delete(&tag)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

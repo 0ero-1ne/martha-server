@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var bookService services.BookService = services.NewBookService()
-var bookController controllers.BookController = controllers.NewBookController(bookService)
+var bookService = services.NewBookService()
+var bookController = controllers.NewBookController(bookService)
 
 func BookRoutes(globalRoute *gin.RouterGroup) {
 	routes := globalRoute.Group("/books")
@@ -17,4 +17,8 @@ func BookRoutes(globalRoute *gin.RouterGroup) {
 	routes.POST("/", bookController.Create)
 	routes.PUT("/:id", bookController.Update)
 	routes.DELETE("/:id", bookController.Delete)
+
+	// many2many book:tag
+	routes.POST("/:id/tags/:tag_id", bookController.AddTag)
+	routes.DELETE("/:id/tags/:tag_id", bookController.DeleteTag)
 }

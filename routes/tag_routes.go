@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var tagService services.TagService = services.NewTagService()
-var tagController controllers.TagController = controllers.NewTagController(tagService)
+var tagService = services.NewTagService()
+var tagController = controllers.NewTagController(tagService)
 
 func TagRoutes(globalRoute *gin.RouterGroup) {
 	routes := globalRoute.Group("/tags")
