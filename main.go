@@ -17,6 +17,7 @@ func main() {
 	globalRoute := server.Group("/api/v1")
 	routes.TagRoutes(globalRoute)
 	routes.BookRoutes(globalRoute)
+	routes.AuthorRoutes(globalRoute)
 
 	err := server.Run(cfg.ServerConfig.GetAddress())
 

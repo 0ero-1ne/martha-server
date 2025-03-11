@@ -84,16 +84,16 @@ func (service BookService) Delete(id uint) error {
 	return nil
 }
 
-func (service BookService) AddTag(book_id uint, tag_id uint) error {
+func (service BookService) AddTag(bookId uint, tagId uint) error {
 	var book models.Book
-	tx := db.GetDB().First(&book, book_id)
+	tx := db.GetDB().First(&book, bookId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	var tag models.Tag
-	tx = db.GetDB().First(&tag, tag_id)
+	tx = db.GetDB().First(&tag, tagId)
 
 	if tx.Error != nil {
 		return tx.Error
@@ -109,16 +109,16 @@ func (service BookService) AddTag(book_id uint, tag_id uint) error {
 	return nil
 }
 
-func (service BookService) DeleteTag(book_id uint, tag_id uint) error {
+func (service BookService) DeleteTag(bookId uint, tagId uint) error {
 	var book models.Book
-	tx := db.GetDB().First(&book, book_id)
+	tx := db.GetDB().First(&book, bookId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	var tag models.Tag
-	tx = db.GetDB().First(&tag, tag_id)
+	tx = db.GetDB().First(&tag, tagId)
 
 	if tx.Error != nil {
 		return tx.Error
