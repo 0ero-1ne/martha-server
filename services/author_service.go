@@ -77,6 +77,25 @@ func (service AuthorService) Delete(id uint) error {
 	return nil
 }
 
+func (service AuthorService) GetBooks(id uint) ([]models.Book, error) {
+	var author models.Author
+	tx := db.GetDB().First(&author, id)
+
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	var books []models.Book
+	err := db.GetDB().Model(&author).Association("Books").Find(&books)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return books, nil
+
+}
+
 func (service AuthorService) AddBook(authorId uint, bookId uint) error {
 	var author models.Author
 	tx := db.GetDB().First(&author, authorId)

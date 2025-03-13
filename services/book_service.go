@@ -84,6 +84,27 @@ func (service BookService) Delete(id uint) error {
 	return nil
 }
 
+// many2many book:tag
+
+func (service BookService) GetTags(id uint) ([]models.Tag, error) {
+	var book models.Book
+	tx := db.GetDB().First(&book, id)
+
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	var tags []models.Tag
+	err := db.GetDB().Model(&book).Association("Tags").Find(&tags)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return tags, nil
+
+}
+
 func (service BookService) AddTag(bookId uint, tagId uint) error {
 	var book models.Book
 	tx := db.GetDB().First(&book, bookId)
@@ -125,6 +146,76 @@ func (service BookService) DeleteTag(bookId uint, tagId uint) error {
 	}
 
 	err := db.GetDB().Model(&book).Association("Tags").Delete(&tag)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// many2many book:author
+
+func (service BookService) GetAuthors(id uint) ([]models.Author, error) {
+	var book models.Book
+	tx := db.GetDB().First(&book, id)
+
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	var authors []models.Author
+	err := db.GetDB().Model(&book).Association("Authors").Find(&authors)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return authors, nil
+
+}
+
+func (service BookService) AddAuthor(bookId uint, authorId uint) error {
+	var book models.Book
+	tx := db.GetDB().First(&book, bookId)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	var author models.Author
+	tx = db.GetDB().First(&author, authorId)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	book.Authors = append(book.Authors, &author)
+	tx = db.GetDB().Save(&book)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	return nil
+}
+
+func (service BookService) DeleteAuthor(bookId uint, authorId uint) error {
+	var book models.Book
+	tx := db.GetDB().First(&book, bookId)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	var author models.Author
+	tx = db.GetDB().First(&author, authorId)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	err := db.GetDB().Model(&book).Association("Authors").Delete(&author)
 
 	if err != nil {
 		return err

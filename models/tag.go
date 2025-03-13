@@ -9,5 +9,5 @@ type Tag struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Title     string    `json:"title" gorm:"uniqueIndex;not null;default:null" binding:"required,min=2"`
-	Books     []*Book   `json:"books," gorm:"many2many:book_tags;constraint:OnDelete:CASCADE,OnUpdate:CASCADE"`
+	Books     []*Book   `json:"books,omitempty" gorm:"many2many:book_tags;constraint:OnDelete:CASCADE,OnUpdate:CASCADE"`
 }

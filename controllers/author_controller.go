@@ -111,6 +111,24 @@ func (controller AuthorController) Delete(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+func (controller AuthorController) GetBooks(ctx *gin.Context) {
+	bookId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
+		return
+	}
+
+	books, err := controller.service.GetBooks(uint(bookId))
+
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, books)
+}
+
 func (controller AuthorController) AddBook(ctx *gin.Context) {
 	authorId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 

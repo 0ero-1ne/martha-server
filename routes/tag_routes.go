@@ -17,4 +17,9 @@ func TagRoutes(globalRoute *gin.RouterGroup) {
 	routes.POST("/", tagController.Create)
 	routes.PUT("/:id", tagController.Update)
 	routes.DELETE("/:id", tagController.Delete)
+
+	// many2many tag:book
+	routes.GET("/:id/books", tagController.GetBooks)
+	routes.POST("/:id/books/:book_id", tagController.AddBook)
+	routes.DELETE("/:id/books/:book_id", tagController.DeleteBook)
 }

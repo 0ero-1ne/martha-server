@@ -18,7 +18,8 @@ func AuthorRoutes(globalRoute *gin.RouterGroup) {
 	routes.PUT("/:id", authorController.Update)
 	routes.DELETE("/:id", authorController.Delete)
 
-	// many2many author:tag
+	// many2many author:book
+	routes.GET("/:id/books", authorController.GetBooks)
 	routes.POST("/:id/books/:book_id", authorController.AddBook)
 	routes.DELETE("/:id/books/:book_id", authorController.DeleteBook)
 }

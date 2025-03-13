@@ -111,6 +111,26 @@ func (controller BookController) Delete(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// many2many book:tag
+
+func (controller BookController) GetTags(ctx *gin.Context) {
+	bookId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
+		return
+	}
+
+	tags, err := controller.service.GetTags(uint(bookId))
+
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, tags)
+}
+
 func (controller BookController) AddTag(ctx *gin.Context) {
 	bookId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 
@@ -152,6 +172,76 @@ func (controller BookController) DeleteTag(ctx *gin.Context) {
 	}
 
 	err = controller.service.DeleteTag(uint(bookId), uint(tagId))
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
+}
+
+// many2many book:author
+
+func (controller BookController) GetAuthors(ctx *gin.Context) {
+	bookId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
+		return
+	}
+
+	authors, err := controller.service.GetAuthors(uint(bookId))
+
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, authors)
+}
+
+func (controller BookController) AddAuthor(ctx *gin.Context) {
+	bookId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
+		return
+	}
+
+	authorId, err := strconv.ParseUint(ctx.Param("author_id"), 10, 64)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'author_id' param value"})
+		return
+	}
+
+	err = controller.service.AddAuthor(uint(bookId), uint(authorId))
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.Status(http.StatusAccepted)
+}
+
+func (controller BookController) DeleteAuthor(ctx *gin.Context) {
+	bookId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
+		return
+	}
+
+	authorId, err := strconv.ParseUint(ctx.Param("author_id"), 10, 64)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'author_id' param value"})
+		return
+	}
+
+	err = controller.service.DeleteAuthor(uint(bookId), uint(authorId))
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
