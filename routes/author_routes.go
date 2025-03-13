@@ -2,6 +2,7 @@ package routes
 
 import (
 	"server/controllers"
+	"server/middlewares"
 	"server/services"
 
 	"github.com/gin-gonic/gin"
@@ -13,13 +14,24 @@ var authorController = controllers.NewAuthorController(authorService)
 func AuthorRoutes(globalRoute *gin.RouterGroup) {
 	routes := globalRoute.Group("/authors")
 	routes.GET("/", authorController.GetAll)
-	routes.GET("/:id", authorController.GetById)
+	routes.GET("/:author_id", middlewares.ParseParamsId([]string{"author_id"}), authorController.GetById)
 	routes.POST("/", authorController.Create)
-	routes.PUT("/:id", authorController.Update)
-	routes.DELETE("/:id", authorController.Delete)
+	routes.PUT("/:author_id", middlewares.ParseParamsId([]string{"author_id"}), authorController.Update)
+	routes.DELETE("/:author_id", middlewares.ParseParamsId([]string{"author_id"}), authorController.Delete)
 
 	// many2many author:book
-	routes.GET("/:id/books", authorController.GetBooks)
-	routes.POST("/:id/books/:book_id", authorController.AddBook)
-	routes.DELETE("/:id/books/:book_id", authorController.DeleteBook)
+	routes.GET(
+		"/:author_id/books",
+		middlewares.ParseParamsId([]string{"author_id"}),
+		authorController.GetBooks)
+
+	routes.POST(
+		"/:author_id/books/:book_id",
+		middlewares.ParseParamsId([]string{"author_id", "book_id"}),
+		authorController.AddBook)
+
+	routes.DELETE(
+		"/:author_id/books/:book_id",
+		middlewares.ParseParamsId([]string{"author_id", "book_id"}),
+		authorController.DeleteBook)
 }

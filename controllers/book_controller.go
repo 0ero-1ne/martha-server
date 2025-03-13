@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"server/models"
 	"server/services"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,14 +30,8 @@ func (controller BookController) GetAll(ctx *gin.Context) {
 }
 
 func (controller BookController) GetById(ctx *gin.Context) {
-	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
-
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
-		return
-	}
-
-	book, err := controller.service.GetById(uint(id))
+	bookId := ctx.GetUint("book_id")
+	book, err := controller.service.GetById(bookId)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -50,9 +43,8 @@ func (controller BookController) GetById(ctx *gin.Context) {
 
 func (controller BookController) Create(ctx *gin.Context) {
 	var book models.Book
-	err := ctx.ShouldBindJSON(&book)
 
-	if err != nil {
+	if err := ctx.ShouldBindJSON(&book); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -68,22 +60,15 @@ func (controller BookController) Create(ctx *gin.Context) {
 }
 
 func (controller BookController) Update(ctx *gin.Context) {
-	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	bookId := ctx.GetUint("book_id")
+	var newBook models.Book
 
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
-		return
-	}
-
-	var book models.Book
-	err = ctx.ShouldBindJSON(&book)
-
-	if err != nil {
+	if err := ctx.ShouldBindJSON(&newBook); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	updatedBook, err := controller.service.Update(uint(id), book)
+	updatedBook, err := controller.service.Update(bookId, newBook)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -94,16 +79,9 @@ func (controller BookController) Update(ctx *gin.Context) {
 }
 
 func (controller BookController) Delete(ctx *gin.Context) {
-	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	bookId := ctx.GetUint("book_id")
 
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
-		return
-	}
-
-	err = controller.service.Delete(uint(id))
-
-	if err != nil {
+	if err := controller.service.Delete(bookId); err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -114,14 +92,8 @@ func (controller BookController) Delete(ctx *gin.Context) {
 // many2many book:tag
 
 func (controller BookController) GetTags(ctx *gin.Context) {
-	bookId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
-
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
-		return
-	}
-
-	tags, err := controller.service.GetTags(uint(bookId))
+	bookId := ctx.GetUint("book_id")
+	tags, err := controller.service.GetTags(bookId)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -132,23 +104,10 @@ func (controller BookController) GetTags(ctx *gin.Context) {
 }
 
 func (controller BookController) AddTag(ctx *gin.Context) {
-	bookId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	bookId := ctx.GetUint("book_id")
+	tagId := ctx.GetUint("tag_id")
 
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
-		return
-	}
-
-	tagId, err := strconv.ParseUint(ctx.Param("tag_id"), 10, 64)
-
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'tag_id' param value"})
-		return
-	}
-
-	err = controller.service.AddTag(uint(bookId), uint(tagId))
-
-	if err != nil {
+	if err := controller.service.AddTag(bookId, tagId); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -157,23 +116,10 @@ func (controller BookController) AddTag(ctx *gin.Context) {
 }
 
 func (controller BookController) DeleteTag(ctx *gin.Context) {
-	bookId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	bookId := ctx.GetUint("book_id")
+	tagId := ctx.GetUint("tag_id")
 
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
-		return
-	}
-
-	tagId, err := strconv.ParseUint(ctx.Param("tag_id"), 10, 64)
-
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'tag_id' param value"})
-		return
-	}
-
-	err = controller.service.DeleteTag(uint(bookId), uint(tagId))
-
-	if err != nil {
+	if err := controller.service.DeleteTag(bookId, tagId); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -184,14 +130,8 @@ func (controller BookController) DeleteTag(ctx *gin.Context) {
 // many2many book:author
 
 func (controller BookController) GetAuthors(ctx *gin.Context) {
-	bookId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
-
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
-		return
-	}
-
-	authors, err := controller.service.GetAuthors(uint(bookId))
+	bookId := ctx.GetUint("book_id")
+	authors, err := controller.service.GetAuthors(bookId)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -202,23 +142,10 @@ func (controller BookController) GetAuthors(ctx *gin.Context) {
 }
 
 func (controller BookController) AddAuthor(ctx *gin.Context) {
-	bookId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	bookId := ctx.GetUint("book_id")
+	authorId := ctx.GetUint("author_id")
 
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
-		return
-	}
-
-	authorId, err := strconv.ParseUint(ctx.Param("author_id"), 10, 64)
-
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'author_id' param value"})
-		return
-	}
-
-	err = controller.service.AddAuthor(uint(bookId), uint(authorId))
-
-	if err != nil {
+	if err := controller.service.AddAuthor(bookId, authorId); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -227,23 +154,10 @@ func (controller BookController) AddAuthor(ctx *gin.Context) {
 }
 
 func (controller BookController) DeleteAuthor(ctx *gin.Context) {
-	bookId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	bookId := ctx.GetUint("book_id")
+	authorId := ctx.GetUint("author_id")
 
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'id' param value"})
-		return
-	}
-
-	authorId, err := strconv.ParseUint(ctx.Param("author_id"), 10, 64)
-
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'author_id' param value"})
-		return
-	}
-
-	err = controller.service.DeleteAuthor(uint(bookId), uint(authorId))
-
-	if err != nil {
+	if err := controller.service.DeleteAuthor(bookId, authorId); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
