@@ -18,6 +18,7 @@ func main() {
 	routes.TagRoutes(globalRoute)
 	routes.BookRoutes(globalRoute)
 	routes.AuthorRoutes(globalRoute)
+	routes.ChapterRoutes(globalRoute)
 
 	err := server.Run(cfg.ServerConfig.GetAddress())
 
