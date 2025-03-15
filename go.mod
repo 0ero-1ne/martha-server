@@ -1,4 +1,4 @@
-module server
+module github.com/0ero-1ne/martha
 
 go 1.24.0
 

@@ -1,8 +1,8 @@
 package services
 
 import (
-	"server/db"
-	"server/models"
+	"github.com/0ero-1ne/martha/internal/db"
+	"github.com/0ero-1ne/martha/internal/models"
 )
 
 type ChapterService struct{}

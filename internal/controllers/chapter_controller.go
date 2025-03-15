@@ -2,8 +2,9 @@ package controllers
 
 import (
 	"net/http"
-	"server/models"
-	"server/services"
+
+	"github.com/0ero-1ne/martha/internal/models"
+	"github.com/0ero-1ne/martha/internal/services"
 
 	"github.com/gin-gonic/gin"
 )

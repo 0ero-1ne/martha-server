@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"server/controllers"
-	"server/middlewares"
-	"server/services"
+	"github.com/0ero-1ne/martha/internal/controllers"
+	"github.com/0ero-1ne/martha/internal/middlewares"
+	"github.com/0ero-1ne/martha/internal/services"
 
 	"github.com/gin-gonic/gin"
 )

@@ -13,8 +13,8 @@ type Config struct {
 	ServerConfig   ServerConfig   `ini:"server"`
 }
 
-func Init() Config {
-	iniData, err := ini.Load("config.ini")
+func Init(configPath string) Config {
+	iniData, err := ini.Load(configPath)
 
 	if err != nil {
 		panic("Can not load config.ini file: " + err.Error())

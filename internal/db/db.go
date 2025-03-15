@@ -1,8 +1,8 @@
 package db
 
 import (
-	"server/config"
-	"server/models"
+	"github.com/0ero-1ne/martha/internal/config"
+	"github.com/0ero-1ne/martha/internal/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

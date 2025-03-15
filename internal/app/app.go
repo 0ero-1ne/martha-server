@@ -1,15 +1,16 @@
-package main
+package app
 
 import (
-	"server/config"
-	"server/db"
-	"server/routes"
+	"github.com/0ero-1ne/martha/internal/config"
+	"github.com/0ero-1ne/martha/internal/routes"
+
+	"github.com/0ero-1ne/martha/internal/db"
 
 	"github.com/gin-gonic/gin"
 )
 
-func main() {
-	cfg := config.Init()
+func Run(configPath string) {
+	cfg := config.Init(configPath)
 	db.InitDatabase(cfg.PostgresConfig)
 
 	server := gin.Default()
