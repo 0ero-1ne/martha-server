@@ -1,19 +1,23 @@
 package services
 
 import (
-	"github.com/0ero-1ne/martha/internal/db"
-	"github.com/0ero-1ne/martha/internal/models"
+	"github.com/0ero-1ne/martha-server/internal/models"
+	"gorm.io/gorm"
 )
 
-type TagService struct{}
+type TagService struct {
+	db *gorm.DB
+}
 
-func NewTagService() TagService {
-	return TagService{}
+func NewTagService(db *gorm.DB) TagService {
+	return TagService{
+		db: db,
+	}
 }
 
 func (service TagService) GetAll() ([]models.Tag, error) {
 	var tags []models.Tag
-	tx := db.GetDB().Find(&tags)
+	tx := service.db.Find(&tags)
 
 	if tx.Error != nil {
 		return nil, tx.Error
@@ -24,7 +28,7 @@ func (service TagService) GetAll() ([]models.Tag, error) {
 
 func (service TagService) GetById(id uint) (models.Tag, error) {
 	var tag models.Tag
-	tx := db.GetDB().First(&tag, id)
+	tx := service.db.First(&tag, id)
 
 	if tx.Error != nil {
 		return tag, tx.Error
@@ -34,7 +38,7 @@ func (service TagService) GetById(id uint) (models.Tag, error) {
 }
 
 func (service TagService) Create(tag models.Tag) (models.Tag, error) {
-	tx := db.GetDB().Create(&tag)
+	tx := service.db.Create(&tag)
 
 	if tx.Error != nil {
 		return tag, tx.Error
@@ -45,7 +49,7 @@ func (service TagService) Create(tag models.Tag) (models.Tag, error) {
 
 func (service TagService) Update(id uint, newTag models.Tag) (models.Tag, error) {
 	var tag models.Tag
-	tx := db.GetDB().First(&tag, id)
+	tx := service.db.First(&tag, id)
 
 	if tx.Error != nil {
 		return tag, tx.Error
@@ -53,7 +57,7 @@ func (service TagService) Update(id uint, newTag models.Tag) (models.Tag, error)
 
 	tag.Title = newTag.Title
 
-	tx = db.GetDB().Save(&tag)
+	tx = service.db.Save(&tag)
 
 	if tx.Error != nil {
 		return tag, tx.Error
@@ -64,13 +68,13 @@ func (service TagService) Update(id uint, newTag models.Tag) (models.Tag, error)
 
 func (service TagService) Delete(id uint) error {
 	var tag models.Tag
-	tx := db.GetDB().First(&tag, id)
+	tx := service.db.First(&tag, id)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
-	tx = db.GetDB().Delete(&tag)
+	tx = service.db.Delete(&tag)
 
 	if tx.Error != nil {
 		return tx.Error
@@ -81,14 +85,14 @@ func (service TagService) Delete(id uint) error {
 
 func (service TagService) GetBooks(id uint) ([]models.Book, error) {
 	var tag models.Tag
-	tx := db.GetDB().First(&tag, id)
+	tx := service.db.First(&tag, id)
 
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
 
 	var books []models.Book
-	err := db.GetDB().Model(&tag).Association("Books").Find(&books)
+	err := service.db.Model(&tag).Association("Books").Find(&books)
 
 	if err != nil {
 		return nil, err
@@ -100,21 +104,21 @@ func (service TagService) GetBooks(id uint) ([]models.Book, error) {
 
 func (service TagService) AddBook(tagId uint, bookId uint) error {
 	var tag models.Tag
-	tx := db.GetDB().First(&tag, tagId)
+	tx := service.db.First(&tag, tagId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	var book models.Book
-	tx = db.GetDB().First(&book, bookId)
+	tx = service.db.First(&book, bookId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	tag.Books = append(tag.Books, &book)
-	tx = db.GetDB().Save(&tag)
+	tx = service.db.Save(&tag)
 
 	if tx.Error != nil {
 		return tx.Error
@@ -125,20 +129,20 @@ func (service TagService) AddBook(tagId uint, bookId uint) error {
 
 func (service TagService) DeleteBook(tagId uint, bookId uint) error {
 	var tag models.Tag
-	tx := db.GetDB().First(&tag, tagId)
+	tx := service.db.First(&tag, tagId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	var book models.Book
-	tx = db.GetDB().First(&book, bookId)
+	tx = service.db.First(&book, bookId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
-	err := db.GetDB().Model(&tag).Association("Books").Delete(&book)
+	err := service.db.Model(&tag).Association("Books").Delete(&book)
 
 	if err != nil {
 		return err

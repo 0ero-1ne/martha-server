@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/0ero-1ne/martha/internal/models"
-	"github.com/0ero-1ne/martha/internal/services"
+	"github.com/0ero-1ne/martha-server/internal/models"
+	"github.com/0ero-1ne/martha-server/internal/services"
 
 	"github.com/gin-gonic/gin"
 )

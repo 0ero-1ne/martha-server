@@ -1,15 +1,23 @@
 package services
 
 import (
-	"github.com/0ero-1ne/martha/internal/db"
-	"github.com/0ero-1ne/martha/internal/models"
+	"github.com/0ero-1ne/martha-server/internal/models"
+	"gorm.io/gorm"
 )
 
-type ChapterService struct{}
+type ChapterService struct {
+	db *gorm.DB
+}
+
+func NewChapterService(db *gorm.DB) ChapterService {
+	return ChapterService{
+		db: db,
+	}
+}
 
 func (service ChapterService) GetAll() ([]models.Chapter, error) {
 	var chapters []models.Chapter
-	tx := db.GetDB().Find(&chapters)
+	tx := service.db.Find(&chapters)
 
 	if tx.Error != nil {
 		return nil, tx.Error
@@ -20,7 +28,7 @@ func (service ChapterService) GetAll() ([]models.Chapter, error) {
 
 func (service ChapterService) GetById(id uint) (models.Chapter, error) {
 	var chapter models.Chapter
-	tx := db.GetDB().First(&chapter, id)
+	tx := service.db.First(&chapter, id)
 
 	if tx.Error != nil {
 		return chapter, tx.Error
@@ -31,13 +39,13 @@ func (service ChapterService) GetById(id uint) (models.Chapter, error) {
 
 func (service ChapterService) Create(chapter models.Chapter) (models.Chapter, error) {
 	var book models.Book
-	tx := db.GetDB().First(&book, chapter.BookId)
+	tx := service.db.First(&book, chapter.BookId)
 
 	if tx.Error != nil {
 		return chapter, tx.Error
 	}
 
-	tx = db.GetDB().Create(&chapter)
+	tx = service.db.Create(&chapter)
 
 	if tx.Error != nil {
 		return chapter, tx.Error
@@ -48,14 +56,14 @@ func (service ChapterService) Create(chapter models.Chapter) (models.Chapter, er
 
 func (service ChapterService) Update(id uint, newChapter models.Chapter) (models.Chapter, error) {
 	var chapter models.Chapter
-	tx := db.GetDB().First(&chapter, id)
+	tx := service.db.First(&chapter, id)
 
 	if tx.Error != nil {
 		return chapter, tx.Error
 	}
 
 	var book models.Book
-	tx = db.GetDB().First(&book, chapter.BookId)
+	tx = service.db.First(&book, chapter.BookId)
 
 	if tx.Error != nil {
 		return chapter, tx.Error
@@ -66,7 +74,7 @@ func (service ChapterService) Update(id uint, newChapter models.Chapter) (models
 	chapter.BookId = newChapter.BookId
 	chapter.Serial = newChapter.Serial
 
-	tx = db.GetDB().Save(&chapter)
+	tx = service.db.Save(&chapter)
 
 	if tx.Error != nil {
 		return chapter, tx.Error
@@ -77,13 +85,13 @@ func (service ChapterService) Update(id uint, newChapter models.Chapter) (models
 
 func (service ChapterService) Delete(id uint) error {
 	var chapter models.Chapter
-	tx := db.GetDB().First(&chapter, id)
+	tx := service.db.First(&chapter, id)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
-	tx = db.GetDB().Delete(&chapter)
+	tx = service.db.Delete(&chapter)
 
 	if tx.Error != nil {
 		return tx.Error

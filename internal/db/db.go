@@ -1,35 +1,44 @@
 package db
 
 import (
-	"github.com/0ero-1ne/martha/internal/config"
-	"github.com/0ero-1ne/martha/internal/models"
+	"time"
 
-	"gorm.io/driver/postgres"
+	"github.com/0ero-1ne/martha-server/internal/models"
 	"gorm.io/gorm"
 )
 
-var database *gorm.DB
-
-func InitDatabase(config config.DatabaseConfig) {
-	if database != nil {
-		return
-	}
-
-	connect(config)
-	migrate()
+type Database interface {
+	Connect() (*gorm.DB, error)
 }
 
-func connect(config config.DatabaseConfig) {
-	var err error
-	database, err = gorm.Open(postgres.Open(config.GetDSN()), &gorm.Config{})
+func InitDatabase(db Database) (*gorm.DB, error) {
+	connection, err := db.Connect()
 
 	if err != nil {
-		panic("Can not connect to database: " + err.Error())
+		return nil, err
 	}
+
+	err = migrate(connection)
+
+	if err != nil {
+		return nil, err
+	}
+
+	sqlDB, err := connection.DB()
+
+	if err != nil {
+		return nil, err
+	}
+
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	return connection, nil
 }
 
-func migrate() {
-	err := database.AutoMigrate(
+func migrate(connection *gorm.DB) error {
+	err := connection.AutoMigrate(
 		&models.Author{},
 		&models.Book{},
 		&models.Tag{},
@@ -41,10 +50,8 @@ func migrate() {
 	)
 
 	if err != nil {
-		panic("Can not migrate models: " + err.Error())
+		return err
 	}
-}
 
-func GetDB() *gorm.DB {
-	return database
+	return nil
 }

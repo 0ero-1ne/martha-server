@@ -1,6 +1,6 @@
 package main
 
-import "github.com/0ero-1ne/martha/internal/app"
+import "github.com/0ero-1ne/martha-server/internal/app"
 
 const configPath = "configs/config.ini"
 

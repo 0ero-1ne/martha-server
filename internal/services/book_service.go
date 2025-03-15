@@ -1,19 +1,23 @@
 package services
 
 import (
-	"github.com/0ero-1ne/martha/internal/db"
-	"github.com/0ero-1ne/martha/internal/models"
+	"github.com/0ero-1ne/martha-server/internal/models"
+	"gorm.io/gorm"
 )
 
-type BookService struct{}
+type BookService struct {
+	db *gorm.DB
+}
 
-func NewBookService() BookService {
-	return BookService{}
+func NewBookService(db *gorm.DB) BookService {
+	return BookService{
+		db: db,
+	}
 }
 
 func (service BookService) GetAll() ([]models.Book, error) {
 	var books []models.Book
-	tx := db.GetDB().Find(&books)
+	tx := service.db.Find(&books)
 
 	if tx.Error != nil {
 		return nil, tx.Error
@@ -24,7 +28,7 @@ func (service BookService) GetAll() ([]models.Book, error) {
 
 func (service BookService) GetById(id uint) (models.Book, error) {
 	var book models.Book
-	tx := db.GetDB().First(&book, id)
+	tx := service.db.First(&book, id)
 
 	if tx.Error != nil {
 		return book, tx.Error
@@ -34,7 +38,7 @@ func (service BookService) GetById(id uint) (models.Book, error) {
 }
 
 func (service BookService) Create(book models.Book) (models.Book, error) {
-	tx := db.GetDB().Create(&book)
+	tx := service.db.Create(&book)
 
 	if tx.Error != nil {
 		return book, tx.Error
@@ -45,7 +49,7 @@ func (service BookService) Create(book models.Book) (models.Book, error) {
 
 func (service BookService) Update(id uint, newBook models.Book) (models.Book, error) {
 	var book models.Book
-	tx := db.GetDB().First(&book, id)
+	tx := service.db.First(&book, id)
 
 	if tx.Error != nil {
 		return book, tx.Error
@@ -58,7 +62,7 @@ func (service BookService) Update(id uint, newBook models.Book) (models.Book, er
 	book.Views = newBook.Views
 	book.Cover = newBook.Cover
 
-	tx = db.GetDB().Save(&book)
+	tx = service.db.Save(&book)
 
 	if tx.Error != nil {
 		return book, tx.Error
@@ -69,13 +73,13 @@ func (service BookService) Update(id uint, newBook models.Book) (models.Book, er
 
 func (service BookService) Delete(id uint) error {
 	var book models.Book
-	tx := db.GetDB().First(&book, id)
+	tx := service.db.First(&book, id)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
-	tx = db.GetDB().Delete(&book)
+	tx = service.db.Delete(&book)
 
 	if tx.Error != nil {
 		return tx.Error
@@ -88,14 +92,14 @@ func (service BookService) Delete(id uint) error {
 
 func (service BookService) GetTags(id uint) ([]models.Tag, error) {
 	var book models.Book
-	tx := db.GetDB().First(&book, id)
+	tx := service.db.First(&book, id)
 
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
 
 	var tags []models.Tag
-	err := db.GetDB().Model(&book).Association("Tags").Find(&tags)
+	err := service.db.Model(&book).Association("Tags").Find(&tags)
 
 	if err != nil {
 		return nil, err
@@ -107,21 +111,21 @@ func (service BookService) GetTags(id uint) ([]models.Tag, error) {
 
 func (service BookService) AddTag(bookId uint, tagId uint) error {
 	var book models.Book
-	tx := db.GetDB().First(&book, bookId)
+	tx := service.db.First(&book, bookId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	var tag models.Tag
-	tx = db.GetDB().First(&tag, tagId)
+	tx = service.db.First(&tag, tagId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	book.Tags = append(book.Tags, &tag)
-	tx = db.GetDB().Save(&book)
+	tx = service.db.Save(&book)
 
 	if tx.Error != nil {
 		return tx.Error
@@ -132,20 +136,20 @@ func (service BookService) AddTag(bookId uint, tagId uint) error {
 
 func (service BookService) DeleteTag(bookId uint, tagId uint) error {
 	var book models.Book
-	tx := db.GetDB().First(&book, bookId)
+	tx := service.db.First(&book, bookId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	var tag models.Tag
-	tx = db.GetDB().First(&tag, tagId)
+	tx = service.db.First(&tag, tagId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
-	err := db.GetDB().Model(&book).Association("Tags").Delete(&tag)
+	err := service.db.Model(&book).Association("Tags").Delete(&tag)
 
 	if err != nil {
 		return err
@@ -158,14 +162,14 @@ func (service BookService) DeleteTag(bookId uint, tagId uint) error {
 
 func (service BookService) GetAuthors(id uint) ([]models.Author, error) {
 	var book models.Book
-	tx := db.GetDB().First(&book, id)
+	tx := service.db.First(&book, id)
 
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
 
 	var authors []models.Author
-	err := db.GetDB().Model(&book).Association("Authors").Find(&authors)
+	err := service.db.Model(&book).Association("Authors").Find(&authors)
 
 	if err != nil {
 		return nil, err
@@ -177,21 +181,21 @@ func (service BookService) GetAuthors(id uint) ([]models.Author, error) {
 
 func (service BookService) AddAuthor(bookId uint, authorId uint) error {
 	var book models.Book
-	tx := db.GetDB().First(&book, bookId)
+	tx := service.db.First(&book, bookId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	var author models.Author
-	tx = db.GetDB().First(&author, authorId)
+	tx = service.db.First(&author, authorId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	book.Authors = append(book.Authors, &author)
-	tx = db.GetDB().Save(&book)
+	tx = service.db.Save(&book)
 
 	if tx.Error != nil {
 		return tx.Error
@@ -202,20 +206,20 @@ func (service BookService) AddAuthor(bookId uint, authorId uint) error {
 
 func (service BookService) DeleteAuthor(bookId uint, authorId uint) error {
 	var book models.Book
-	tx := db.GetDB().First(&book, bookId)
+	tx := service.db.First(&book, bookId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
 	var author models.Author
-	tx = db.GetDB().First(&author, authorId)
+	tx = service.db.First(&author, authorId)
 
 	if tx.Error != nil {
 		return tx.Error
 	}
 
-	err := db.GetDB().Model(&book).Association("Authors").Delete(&author)
+	err := service.db.Model(&book).Association("Authors").Delete(&author)
 
 	if err != nil {
 		return err

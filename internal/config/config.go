@@ -1,12 +1,10 @@
 package config
 
 import (
+	"fmt"
+
 	"gopkg.in/ini.v1"
 )
-
-type DatabaseConfig interface {
-	GetDSN() string
-}
 
 type Config struct {
 	PostgresConfig PostgresConfig `ini:"database.postgres"`
@@ -17,7 +15,7 @@ func Init(configPath string) Config {
 	iniData, err := ini.Load(configPath)
 
 	if err != nil {
-		panic("Can not load config.ini file: " + err.Error())
+		panic(fmt.Sprintf("Can not load %s config file: %s", configPath, err.Error()))
 	}
 
 	var config Config
