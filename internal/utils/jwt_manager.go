@@ -3,7 +3,6 @@ package utils
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"time"
 
 	"github.com/0ero-1ne/martha-server/internal/config"
@@ -46,18 +45,14 @@ func (manager JWTManager) NewRefreshToken() (string, error) {
 	return base64.StdEncoding.EncodeToString(bytes), nil
 }
 
-func (manager JWTManager) Parse(tokenString string) error {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+func (manager JWTManager) VerifyToken(tokenString string) bool {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 		return []byte(manager.secret), nil
 	})
 
 	if err != nil {
-		return err
+		return false
 	}
 
-	if !token.Valid {
-		return fmt.Errorf("Token is invalid")
-	}
-
-	return nil
+	return token.Valid
 }
