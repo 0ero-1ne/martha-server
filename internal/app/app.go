@@ -13,6 +13,7 @@ import (
 	"github.com/0ero-1ne/martha-server/internal/db/postgres"
 	"github.com/0ero-1ne/martha-server/internal/server"
 	"github.com/0ero-1ne/martha-server/internal/server/routes"
+	"github.com/0ero-1ne/martha-server/internal/utils"
 )
 
 func Run(configPath string) {
@@ -24,7 +25,8 @@ func Run(configPath string) {
 		panic("Can not connect to database: " + err.Error())
 	}
 
-	httpServer := server.NewHttpServer(cfg.ServerConfig, routes.NewRouter(database))
+	jwtManager := utils.NewJWTManager(cfg.JWTConfig)
+	httpServer := server.NewHttpServer(cfg.ServerConfig, routes.NewRouter(database, jwtManager))
 
 	go func() {
 		log.Printf("Sever is listening on %s", httpServer.Addr)

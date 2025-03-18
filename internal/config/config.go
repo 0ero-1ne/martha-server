@@ -9,6 +9,7 @@ import (
 type Config struct {
 	PostgresConfig PostgresConfig `ini:"database.postgres"`
 	ServerConfig   ServerConfig   `ini:"server"`
+	JWTConfig      JWTConfig      `ini:"jwt"`
 }
 
 func Init(configPath string) Config {

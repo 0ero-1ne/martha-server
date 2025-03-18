@@ -8,3 +8,6 @@ password = <password>
 [server]
 host = 0.0.0.0
 port = 8080
+
+[jwt]
+secret = <secret_string_only_letters_and_numbers>

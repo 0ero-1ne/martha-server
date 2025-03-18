@@ -3,11 +3,12 @@ package routes
 import (
 	"github.com/0ero-1ne/martha-server/internal/controllers"
 	"github.com/0ero-1ne/martha-server/internal/services"
+	"github.com/0ero-1ne/martha-server/internal/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func NewRouter(db *gorm.DB) *gin.Engine {
+func NewRouter(db *gorm.DB, jwtManager utils.JWTManager) *gin.Engine {
 	router := gin.Default()
 	apiRoute := router.Group("/api")
 
@@ -15,6 +16,7 @@ func NewRouter(db *gorm.DB) *gin.Engine {
 	registerBookRouter(apiRoute, services.NewBookService(db))
 	registerAuthorRouter(apiRoute, services.NewAuthorService(db))
 	registerChapterRouter(apiRoute, services.NewChapterService(db))
+	registerAuthRouter(apiRoute, services.NewAuthService(db), jwtManager)
 
 	return router
 }
@@ -33,4 +35,8 @@ func registerAuthorRouter(globalRoute *gin.RouterGroup, service services.AuthorS
 
 func registerChapterRouter(globalRoute *gin.RouterGroup, service services.ChapterService) {
 	chapterRouter(globalRoute, controllers.NewChapterController(service))
+}
+
+func registerAuthRouter(globalRoute *gin.RouterGroup, service services.AuthService, jwtManager utils.JWTManager) {
+	authRouter(globalRoute, controllers.NewAuthController(service, jwtManager))
 }
