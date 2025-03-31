@@ -20,7 +20,7 @@ func NewAuthService(db *gorm.DB) AuthService {
 	}
 }
 
-func (service AuthService) SignUp(authUser models.AuthUser) error {
+func (service AuthService) Signup(authUser models.AuthUser) error {
 	tx := service.db.First(&models.User{}, "email = ?", authUser.Email)
 
 	if tx.Error == nil {
@@ -48,11 +48,15 @@ func (service AuthService) SignUp(authUser models.AuthUser) error {
 	return nil
 }
 
-func (service AuthService) SignIn(authUser models.AuthUser) (models.User, error) {
+func (service AuthService) Login(authUser models.AuthUser) (models.User, error) {
 	var user models.User
 	tx := service.db.First(&user, "email = ?", authUser.Email)
 
 	return user, tx.Error
+}
+
+func (service AuthService) Refresh() {
+
 }
 
 func hashPassword(password string) (string, error) {

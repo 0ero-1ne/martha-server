@@ -7,6 +7,7 @@ import (
 
 func authRouter(globalRoute *gin.RouterGroup, controller controllers.AuthController) {
 	router := globalRoute.Group("/auth")
-	router.POST("/signup", controller.SignUp)
-	router.POST("/signin", controller.SignIn)
+	router.POST("/signup", controller.Signup)
+	router.POST("/login", controller.Login)
+	router.POST("/refresh", controller.Refresh)
 }
