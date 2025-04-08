@@ -15,26 +15,62 @@ func NewBookService(db *gorm.DB) BookService {
 	}
 }
 
-func (service BookService) GetAll() ([]models.Book, error) {
+func (service BookService) GetAll(params models.BookUrlParams) ([]models.Book, error) {
 	var books []models.Book
-	tx := service.db.Find(&books)
+	tx := service.db.Model(&models.Book{})
 
-	if tx.Error != nil {
-		return nil, tx.Error
+	if params.WithAuthors {
+		tx = tx.Preload("Authors")
 	}
 
-	return books, nil
+	if params.WithComments {
+		tx = tx.Preload("Comments")
+	}
+
+	if params.WithTags {
+		tx = tx.Preload("Tags")
+	}
+
+	if params.WithChapters {
+		tx = tx.Preload("Chapters")
+	}
+
+	if params.Offset != 0 {
+		tx = tx.Offset(params.Offset)
+	}
+
+	if params.Limit != 0 {
+		tx = tx.Limit(params.Limit)
+	}
+
+	tx = tx.Find(&books)
+
+	return books, tx.Error
 }
 
-func (service BookService) GetById(id uint) (models.Book, error) {
+func (service BookService) GetById(id uint, params models.BookUrlParams) (models.Book, error) {
 	var book models.Book
-	tx := service.db.First(&book, id)
+	tx := service.db
 
-	if tx.Error != nil {
-		return book, tx.Error
+	if params.WithAuthors {
+		tx = tx.Preload("Authors")
 	}
 
-	return book, nil
+	if params.WithComments {
+		tx = tx.Preload("Comments")
+	}
+
+	if params.WithTags {
+		tx = tx.Preload("Tags")
+	}
+
+	if params.WithChapters {
+		tx = tx.Preload("Chapters")
+	}
+
+	tx = tx.First(&book, id)
+
+	return book, tx.Error
 }
 
 func (service BookService) Create(book models.Book) (models.Book, error) {

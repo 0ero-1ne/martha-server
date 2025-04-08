@@ -37,6 +37,13 @@ func (service ChapterService) GetById(id uint) (models.Chapter, error) {
 	return chapter, nil
 }
 
+func (service ChapterService) GetChaptersByBookId(bookId uint) ([]models.Chapter, error) {
+	var chapters []models.Chapter
+	tx := service.db.Where("book_id = ?", bookId).Find(&chapters)
+
+	return chapters, tx.Error
+}
+
 func (service ChapterService) Create(chapter models.Chapter) (models.Chapter, error) {
 	var book models.Book
 	tx := service.db.First(&book, chapter.BookId)
@@ -70,7 +77,8 @@ func (service ChapterService) Update(id uint, newChapter models.Chapter) (models
 	}
 
 	chapter.Title = newChapter.Title
-	chapter.Content = newChapter.Content
+	chapter.Text = newChapter.Text
+	chapter.Audio = newChapter.Audio
 	chapter.BookId = newChapter.BookId
 	chapter.Serial = newChapter.Serial
 

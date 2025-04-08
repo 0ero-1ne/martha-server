@@ -55,10 +55,6 @@ func (service AuthService) Login(authUser models.AuthUser) (models.User, error) 
 	return user, tx.Error
 }
 
-func (service AuthService) Refresh() {
-
-}
-
 func hashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err

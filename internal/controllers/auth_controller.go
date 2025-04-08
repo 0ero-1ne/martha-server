@@ -53,25 +53,12 @@ func (controller AuthController) Login(ctx *gin.Context) {
 
 	user, err := controller.service.Login(authUser)
 
-	if err != nil {
+	if err != nil || !checkPasswordHash(authUser.Password, user.Password) {
 		ctx.JSON(http.StatusBadRequest, "Incorrect email or password")
 		return
 	}
 
-	if !checkPasswordHash(authUser.Password, user.Password) {
-		ctx.JSON(http.StatusBadRequest, "Incorrect email or password")
-		return
-	}
-
-	accessToken, err := controller.jwtManager.NewJWTToken(user.Id)
-
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, "Login error, try again later")
-		log.Printf("%s", err.Error())
-		return
-	}
-
-	refreshToken, err := controller.jwtManager.NewRefreshToken(user.Id)
+	accessToken, refreshToken, err := controller.generateNewTokensPair(user.Id)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, "Login error, try again later")
@@ -107,18 +94,10 @@ func (controller AuthController) Refresh(ctx *gin.Context) {
 		return
 	}
 
-	accessToken, err := controller.jwtManager.NewJWTToken(userId)
+	accessToken, refreshToken, err := controller.generateNewTokensPair(userId)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, "Generate access token error")
-		log.Printf("%s", err.Error())
-		return
-	}
-
-	refreshToken, err = controller.jwtManager.NewRefreshToken(userId)
-
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, "Generate refresh token error")
 		log.Printf("%s", err.Error())
 		return
 	}
@@ -132,4 +111,20 @@ func (controller AuthController) Refresh(ctx *gin.Context) {
 func checkPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+func (controller AuthController) generateNewTokensPair(userId uint) (string, string, error) {
+	accessToken, err := controller.jwtManager.NewJWTToken(userId)
+
+	if err != nil {
+		return "", "", err
+	}
+
+	refreshToken, err := controller.jwtManager.NewRefreshToken(userId)
+
+	if err != nil {
+		return "", "", err
+	}
+
+	return accessToken, refreshToken, nil
 }

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+
 	"github.com/0ero-1ne/martha-server/internal/models"
 	"github.com/0ero-1ne/martha-server/internal/services"
 
@@ -19,7 +20,13 @@ func NewBookController(service services.BookService) BookController {
 }
 
 func (controller BookController) GetAll(ctx *gin.Context) {
-	books, err := controller.service.GetAll()
+	params := models.BookUrlParams{
+		WithTags:     len(ctx.Query("withTags")) != 0,
+		WithAuthors:  len(ctx.Query("withAuthors")) != 0,
+		WithComments: len(ctx.Query("withComments")) != 0,
+		WithChapters: len(ctx.Query("withChapters")) != 0,
+	}
+	books, err := controller.service.GetAll(params)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -31,7 +38,15 @@ func (controller BookController) GetAll(ctx *gin.Context) {
 
 func (controller BookController) GetById(ctx *gin.Context) {
 	bookId := ctx.GetUint("book_id")
-	book, err := controller.service.GetById(bookId)
+
+	params := models.BookUrlParams{
+		WithTags:     len(ctx.Query("withTags")) != 0,
+		WithAuthors:  len(ctx.Query("withAuthors")) != 0,
+		WithComments: len(ctx.Query("withComments")) != 0,
+		WithChapters: len(ctx.Query("withChapters")) != 0,
+	}
+
+	book, err := controller.service.GetById(bookId, params)
 
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)

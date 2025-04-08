@@ -42,6 +42,18 @@ func (controller ChapterController) GetById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, chapter)
 }
 
+func (controller ChapterController) GetChaptersByBookId(ctx *gin.Context) {
+	bookId := ctx.GetUint("book_id")
+	chapters, err := controller.service.GetChaptersByBookId(bookId)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, chapters)
+}
+
 func (controller ChapterController) Create(ctx *gin.Context) {
 	var chapter models.Chapter
 
