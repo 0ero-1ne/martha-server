@@ -3,10 +3,10 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/0ero-1ne/martha-server/internal/models"
 	"github.com/0ero-1ne/martha-server/internal/services"
-
-	"github.com/gin-gonic/gin"
 )
 
 type AuthorController struct {
@@ -21,7 +21,6 @@ func NewAuthorController(service services.AuthorService) AuthorController {
 
 func (controller AuthorController) GetAll(ctx *gin.Context) {
 	authors, err := controller.service.GetAll()
-
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return
@@ -33,7 +32,6 @@ func (controller AuthorController) GetAll(ctx *gin.Context) {
 func (controller AuthorController) GetById(ctx *gin.Context) {
 	authorId := ctx.GetUint("author_id")
 	author, err := controller.service.GetById(authorId)
-
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return
@@ -51,7 +49,6 @@ func (controller AuthorController) Create(ctx *gin.Context) {
 	}
 
 	createdAuthor, err := controller.service.Create(author)
-
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -70,7 +67,6 @@ func (controller AuthorController) Update(ctx *gin.Context) {
 	}
 
 	updatedAuthor, err := controller.service.Update(authorId, author)
-
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -95,7 +91,6 @@ func (controller AuthorController) Delete(ctx *gin.Context) {
 func (controller AuthorController) GetBooks(ctx *gin.Context) {
 	authorId := ctx.GetUint("author_id")
 	books, err := controller.service.GetBooks(authorId)
-
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return

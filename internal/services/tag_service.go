@@ -1,8 +1,9 @@
 package services
 
 import (
-	"github.com/0ero-1ne/martha-server/internal/models"
 	"gorm.io/gorm"
+
+	"github.com/0ero-1ne/martha-server/internal/models"
 )
 
 type TagService struct {
@@ -93,13 +94,11 @@ func (service TagService) GetBooks(id uint) ([]models.Book, error) {
 
 	var books []models.Book
 	err := service.db.Model(&tag).Association("Books").Find(&books)
-
 	if err != nil {
 		return nil, err
 	}
 
 	return books, nil
-
 }
 
 func (service TagService) AddBook(tagId uint, bookId uint) error {
@@ -143,7 +142,6 @@ func (service TagService) DeleteBook(tagId uint, bookId uint) error {
 	}
 
 	err := service.db.Model(&tag).Association("Books").Delete(&book)
-
 	if err != nil {
 		return err
 	}

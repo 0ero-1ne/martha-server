@@ -1,8 +1,9 @@
 package services
 
 import (
-	"github.com/0ero-1ne/martha-server/internal/models"
 	"gorm.io/gorm"
+
+	"github.com/0ero-1ne/martha-server/internal/models"
 )
 
 type AuthorService struct {
@@ -95,13 +96,11 @@ func (service AuthorService) GetBooks(id uint) ([]models.Book, error) {
 
 	var books []models.Book
 	err := service.db.Model(&author).Association("Books").Find(&books)
-
 	if err != nil {
 		return nil, err
 	}
 
 	return books, nil
-
 }
 
 func (service AuthorService) AddBook(authorId uint, bookId uint) error {
@@ -145,7 +144,6 @@ func (service AuthorService) DeleteBook(authorId uint, bookId uint) error {
 	}
 
 	err := service.db.Model(&author).Association("Books").Delete(&book)
-
 	if err != nil {
 		return err
 	}

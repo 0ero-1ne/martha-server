@@ -5,8 +5,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/0ero-1ne/martha-server/internal/config"
 	"github.com/golang-jwt/jwt/v5"
+
+	"github.com/0ero-1ne/martha-server/internal/config"
 )
 
 type JWTManager struct {
@@ -26,7 +27,6 @@ func (manager JWTManager) NewJWTToken(userId uint) (string, error) {
 	})
 
 	sign, err := token.SignedString([]byte(manager.secret))
-
 	if err != nil {
 		return "", err
 	}
@@ -41,7 +41,6 @@ func (manager JWTManager) NewRefreshToken(userId uint) (string, error) {
 	})
 
 	sign, err := token.SignedString([]byte(manager.secret))
-
 	if err != nil {
 		return "", err
 	}
@@ -53,7 +52,6 @@ func (manager JWTManager) VerifyToken(tokenString string) bool {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 		return []byte(manager.secret), nil
 	})
-
 	if err != nil {
 		return false
 	}
@@ -68,7 +66,6 @@ func (manager JWTManager) ExtractIdFromToken(tokenString string) (uint, error) {
 		}
 		return []byte(manager.secret), nil
 	})
-
 	if err != nil {
 		return 0, err
 	}

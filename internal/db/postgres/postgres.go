@@ -1,9 +1,10 @@
 package postgres
 
 import (
-	"github.com/0ero-1ne/martha-server/internal/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/0ero-1ne/martha-server/internal/config"
 )
 
 type PostgresDatabase struct {
@@ -18,7 +19,6 @@ func NewPostgresDatabase(config config.PostgresConfig) PostgresDatabase {
 
 func (database PostgresDatabase) Connect() (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(database.config.GetDSN()), &gorm.Config{})
-
 	if err != nil {
 		return nil, err
 	}

@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/0ero-1ne/martha-server/internal/utils"
 	"github.com/gin-gonic/gin"
+
+	"github.com/0ero-1ne/martha-server/internal/utils"
 )
 
 func IsAuth(jwtManager utils.JWTManager) gin.HandlerFunc {
@@ -18,7 +19,6 @@ func IsAuth(jwtManager utils.JWTManager) gin.HandlerFunc {
 
 			if jwtManager.VerifyToken(authToken) {
 				userId, err := jwtManager.ExtractIdFromToken(authToken)
-
 				if err != nil {
 					ctx.JSON(http.StatusUnauthorized, "Unauthorized")
 					ctx.Abort()

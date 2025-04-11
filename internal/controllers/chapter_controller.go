@@ -3,10 +3,10 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/0ero-1ne/martha-server/internal/models"
 	"github.com/0ero-1ne/martha-server/internal/services"
-
-	"github.com/gin-gonic/gin"
 )
 
 type ChapterController struct {
@@ -21,7 +21,6 @@ func NewChapterController(service services.ChapterService) ChapterController {
 
 func (controller ChapterController) GetAll(ctx *gin.Context) {
 	chapters, err := controller.service.GetAll()
-
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return
@@ -33,7 +32,6 @@ func (controller ChapterController) GetAll(ctx *gin.Context) {
 func (controller ChapterController) GetById(ctx *gin.Context) {
 	chapterId := ctx.GetUint("chapter_id")
 	chapter, err := controller.service.GetById(chapterId)
-
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return
@@ -45,7 +43,6 @@ func (controller ChapterController) GetById(ctx *gin.Context) {
 func (controller ChapterController) GetChaptersByBookId(ctx *gin.Context) {
 	bookId := ctx.GetUint("book_id")
 	chapters, err := controller.service.GetChaptersByBookId(bookId)
-
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -63,7 +60,6 @@ func (controller ChapterController) Create(ctx *gin.Context) {
 	}
 
 	createdBook, err := controller.service.Create(chapter)
-
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -82,7 +78,6 @@ func (controller ChapterController) Update(ctx *gin.Context) {
 	}
 
 	updatedChapter, err := controller.service.Update(chapterId, newChapter)
-
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

@@ -1,10 +1,10 @@
 package routes
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"github.com/0ero-1ne/martha-server/internal/controllers"
 	"github.com/0ero-1ne/martha-server/internal/middlewares"
-
-	"github.com/gin-gonic/gin"
 )
 
 func tagRouter(globalRoute *gin.RouterGroup, controller controllers.TagController) {

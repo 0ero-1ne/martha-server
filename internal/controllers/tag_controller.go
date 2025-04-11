@@ -3,10 +3,10 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/0ero-1ne/martha-server/internal/models"
 	"github.com/0ero-1ne/martha-server/internal/services"
-
-	"github.com/gin-gonic/gin"
 )
 
 type TagController struct {
@@ -21,7 +21,6 @@ func NewTagController(service services.TagService) TagController {
 
 func (controller TagController) GetAll(ctx *gin.Context) {
 	tags, err := controller.service.GetAll()
-
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return
@@ -33,7 +32,6 @@ func (controller TagController) GetAll(ctx *gin.Context) {
 func (controller TagController) GetById(ctx *gin.Context) {
 	tagId := ctx.GetUint("tag_id")
 	tag, err := controller.service.GetById(tagId)
-
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return
@@ -51,7 +49,6 @@ func (controller TagController) Create(ctx *gin.Context) {
 	}
 
 	createdTag, err := controller.service.Create(tag)
-
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -70,7 +67,6 @@ func (controller TagController) Update(ctx *gin.Context) {
 	}
 
 	updatedTag, err := controller.service.Update(tagId, tag)
-
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -95,7 +91,6 @@ func (controller TagController) Delete(ctx *gin.Context) {
 func (controller TagController) GetBooks(ctx *gin.Context) {
 	tagId := ctx.GetUint("tag_id")
 	books, err := controller.service.GetBooks(tagId)
-
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return

@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/0ero-1ne/martha-server/internal/models"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+
+	"github.com/0ero-1ne/martha-server/internal/models"
 )
 
 type AuthService struct {
@@ -28,7 +29,6 @@ func (service AuthService) Signup(authUser models.AuthUser) error {
 	}
 
 	hashedPassword, err := hashPassword(authUser.Password)
-
 	if err != nil {
 		return errors.New("Sign up error. Try again later")
 	}

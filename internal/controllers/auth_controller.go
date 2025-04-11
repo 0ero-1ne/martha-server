@@ -4,11 +4,12 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/0ero-1ne/martha-server/internal/models"
 	"github.com/0ero-1ne/martha-server/internal/services"
 	"github.com/0ero-1ne/martha-server/internal/utils"
-	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthController struct {
@@ -59,7 +60,6 @@ func (controller AuthController) Login(ctx *gin.Context) {
 	}
 
 	accessToken, refreshToken, err := controller.generateNewTokensPair(user.Id)
-
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, "Login error, try again later")
 		log.Printf("%s", err.Error())
@@ -88,14 +88,12 @@ func (controller AuthController) Refresh(ctx *gin.Context) {
 	}
 
 	userId, err := controller.jwtManager.ExtractIdFromToken(refreshToken)
-
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
 	accessToken, refreshToken, err := controller.generateNewTokensPair(userId)
-
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, "Generate access token error")
 		log.Printf("%s", err.Error())
@@ -115,13 +113,11 @@ func checkPasswordHash(password, hash string) bool {
 
 func (controller AuthController) generateNewTokensPair(userId uint) (string, string, error) {
 	accessToken, err := controller.jwtManager.NewJWTToken(userId)
-
 	if err != nil {
 		return "", "", err
 	}
 
 	refreshToken, err := controller.jwtManager.NewRefreshToken(userId)
-
 	if err != nil {
 		return "", "", err
 	}

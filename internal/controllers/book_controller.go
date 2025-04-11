@@ -3,10 +3,10 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/0ero-1ne/martha-server/internal/models"
 	"github.com/0ero-1ne/martha-server/internal/services"
-
-	"github.com/gin-gonic/gin"
 )
 
 type BookController struct {
@@ -27,7 +27,6 @@ func (controller BookController) GetAll(ctx *gin.Context) {
 		WithChapters: len(ctx.Query("withChapters")) != 0,
 	}
 	books, err := controller.service.GetAll(params)
-
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return
@@ -47,7 +46,6 @@ func (controller BookController) GetById(ctx *gin.Context) {
 	}
 
 	book, err := controller.service.GetById(bookId, params)
-
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return
@@ -65,7 +63,6 @@ func (controller BookController) Create(ctx *gin.Context) {
 	}
 
 	createdBook, err := controller.service.Create(book)
-
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -84,7 +81,6 @@ func (controller BookController) Update(ctx *gin.Context) {
 	}
 
 	updatedBook, err := controller.service.Update(bookId, newBook)
-
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -109,7 +105,6 @@ func (controller BookController) Delete(ctx *gin.Context) {
 func (controller BookController) GetTags(ctx *gin.Context) {
 	bookId := ctx.GetUint("book_id")
 	tags, err := controller.service.GetTags(bookId)
-
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return
@@ -147,7 +142,6 @@ func (controller BookController) DeleteTag(ctx *gin.Context) {
 func (controller BookController) GetAuthors(ctx *gin.Context) {
 	bookId := ctx.GetUint("book_id")
 	authors, err := controller.service.GetAuthors(bookId)
-
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return

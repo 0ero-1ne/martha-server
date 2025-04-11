@@ -3,8 +3,9 @@ package db
 import (
 	"time"
 
-	"github.com/0ero-1ne/martha-server/internal/models"
 	"gorm.io/gorm"
+
+	"github.com/0ero-1ne/martha-server/internal/models"
 )
 
 type Database interface {
@@ -13,19 +14,16 @@ type Database interface {
 
 func InitDatabase(db Database) (*gorm.DB, error) {
 	connection, err := db.Connect()
-
 	if err != nil {
 		return nil, err
 	}
 
 	err = migrate(connection)
-
 	if err != nil {
 		return nil, err
 	}
 
 	sqlDB, err := connection.DB()
-
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +46,6 @@ func migrate(connection *gorm.DB) error {
 		&models.CommentRate{},
 		&models.BookRate{},
 	)
-
 	if err != nil {
 		return err
 	}

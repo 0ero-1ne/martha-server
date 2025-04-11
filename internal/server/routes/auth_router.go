@@ -1,8 +1,9 @@
 package routes
 
 import (
-	"github.com/0ero-1ne/martha-server/internal/controllers"
 	"github.com/gin-gonic/gin"
+
+	"github.com/0ero-1ne/martha-server/internal/controllers"
 )
 
 func authRouter(globalRoute *gin.RouterGroup, controller controllers.AuthController) {

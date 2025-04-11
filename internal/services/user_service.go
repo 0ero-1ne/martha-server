@@ -1,8 +1,9 @@
 package services
 
 import (
-	"github.com/0ero-1ne/martha-server/internal/models"
 	"gorm.io/gorm"
+
+	"github.com/0ero-1ne/martha-server/internal/models"
 )
 
 type UserService struct {
