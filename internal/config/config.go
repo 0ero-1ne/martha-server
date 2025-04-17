@@ -14,16 +14,13 @@ type Config struct {
 
 func Init(configPath string) Config {
 	iniData, err := ini.Load(configPath)
-
 	if err != nil {
 		panic(fmt.Sprintf("Can not load %s config file: %s", configPath, err.Error()))
 	}
 
 	var config Config
-	err = iniData.MapTo(&config)
-
-	if err != nil {
-		panic("Can not parse ini data: " + err.Error())
+	if err := iniData.MapTo(&config); err != nil {
+		panic(fmt.Sprintf("Can not parse ini data: %s", err.Error()))
 	}
 
 	return config

@@ -16,7 +16,7 @@ func NewRouter(db *gorm.DB, jwtManager utils.JWTManager) *gin.Engine {
 	registerTagRouter(apiRoute, services.NewTagService(db))
 	registerBookRouter(apiRoute, services.NewBookService(db))
 	registerAuthorRouter(apiRoute, services.NewAuthorService(db))
-	registerChapterRouter(apiRoute, services.NewChapterService(db))
+	registerChapterRouter(apiRoute, services.NewChapterService(db), jwtManager)
 	registerAuthRouter(apiRoute, services.NewAuthService(db), jwtManager)
 	registerUserRouter(apiRoute, services.NewUserService(db), jwtManager)
 
@@ -35,8 +35,12 @@ func registerAuthorRouter(globalRoute *gin.RouterGroup, service services.AuthorS
 	authorRouter(globalRoute, controllers.NewAuthorController(service))
 }
 
-func registerChapterRouter(globalRoute *gin.RouterGroup, service services.ChapterService) {
-	chapterRouter(globalRoute, controllers.NewChapterController(service))
+func registerChapterRouter(
+	globalRoute *gin.RouterGroup,
+	service services.ChapterService,
+	jwtManager utils.JWTManager,
+) {
+	chapterRouter(globalRoute, controllers.NewChapterController(service), jwtManager)
 }
 
 func registerAuthRouter(

@@ -20,7 +20,7 @@ func IsAuth(jwtManager utils.JWTManager) gin.HandlerFunc {
 			if jwtManager.VerifyToken(authToken) {
 				userId, err := jwtManager.ExtractIdFromToken(authToken)
 				if err != nil {
-					ctx.JSON(http.StatusUnauthorized, "Unauthorized")
+					ctx.JSON(http.StatusUnauthorized, "Invalid access token")
 					ctx.Abort()
 					return
 				}
@@ -30,12 +30,12 @@ func IsAuth(jwtManager utils.JWTManager) gin.HandlerFunc {
 				return
 			}
 
-			ctx.JSON(http.StatusUnauthorized, "Unauthorized")
+			ctx.JSON(http.StatusUnauthorized, "Invalid access token")
 			ctx.Abort()
 			return
 		}
 
-		ctx.JSON(http.StatusUnauthorized, "Unauthorized")
+		ctx.JSON(http.StatusUnauthorized, "Invalid authorization header")
 		ctx.Abort()
 	}
 }
