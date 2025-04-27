@@ -19,6 +19,7 @@ func NewRouter(db *gorm.DB, jwtManager utils.JWTManager) *gin.Engine {
 	registerChapterRouter(apiRoute, services.NewChapterService(db), jwtManager)
 	registerAuthRouter(apiRoute, services.NewAuthService(db), jwtManager)
 	registerUserRouter(apiRoute, services.NewUserService(db), jwtManager)
+	registerCommentRouter(apiRoute, services.NewCommentService(db), jwtManager)
 
 	return router
 }
@@ -57,4 +58,12 @@ func registerUserRouter(
 	jwtManager utils.JWTManager,
 ) {
 	userRouter(globalRoute, controllers.NewUserController(service), jwtManager)
+}
+
+func registerCommentRouter(
+	globalRoute *gin.RouterGroup,
+	service services.CommentService,
+	jwtManager utils.JWTManager,
+) {
+	commentRouter(globalRoute, controllers.NewCommentController(service), jwtManager)
 }
