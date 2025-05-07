@@ -68,7 +68,12 @@ func (service CommentService) Delete(commentId uint) error {
 
 func (service CommentService) GetAllByBookId(bookId uint) ([]models.Comment, error) {
 	var comments []models.Comment
-	tx := service.db.Model(&models.Comment{}).Where("book_id = ?", bookId).Preload("Rates").Find(&comments)
+	tx := service.db.
+		Preload("Rates").
+		Preload("Rates.User").
+		Preload("User").
+		Where("book_id = ?", bookId).
+		Find(&comments)
 
 	return comments, tx.Error
 }

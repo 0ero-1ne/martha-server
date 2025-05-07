@@ -10,4 +10,5 @@ type Comment struct {
 	BookId    uint          `gorm:"not null;default:null"                                            json:"book_id"`
 	UserId    uint          `gorm:"not null;default:null"                                            json:"user_id"`
 	Rates     []CommentRate `gorm:"constraint:OnDelete:CASCADE,OnUpdate:CASCADE"                     json:"rates"`
+	User      User          `json:"user"`
 }
