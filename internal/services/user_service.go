@@ -22,3 +22,21 @@ func (service UserService) GetById(id uint) (models.User, error) {
 
 	return user, tx.Error
 }
+
+func (service UserService) Update(newUser models.User, userId uint) (models.User, error) {
+	var user models.User
+	tx := service.db.First(&user, userId)
+
+	if tx.Error != nil {
+		return user, tx.Error
+	}
+
+	user.Email = newUser.Email
+	user.Username = newUser.Username
+	user.Image = newUser.Image
+	user.Role = newUser.Role
+	user.SavedBooks = newUser.SavedBooks
+
+	tx = service.db.Save(&user)
+	return user, tx.Error
+}

@@ -4,8 +4,6 @@ import (
 	"time"
 
 	"gorm.io/gorm"
-
-	"github.com/0ero-1ne/martha-server/internal/models"
 )
 
 type Database interface {
@@ -14,11 +12,6 @@ type Database interface {
 
 func InitDatabase(db Database) (*gorm.DB, error) {
 	connection, err := db.Connect()
-	if err != nil {
-		return nil, err
-	}
-
-	err = migrate(connection)
 	if err != nil {
 		return nil, err
 	}
@@ -33,22 +26,4 @@ func InitDatabase(db Database) (*gorm.DB, error) {
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
 	return connection, nil
-}
-
-func migrate(connection *gorm.DB) error {
-	err := connection.AutoMigrate(
-		&models.Author{},
-		&models.Book{},
-		&models.Tag{},
-		&models.User{},
-		&models.Chapter{},
-		&models.Comment{},
-		&models.CommentRate{},
-		&models.BookRate{},
-	)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

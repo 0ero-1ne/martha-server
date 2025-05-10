@@ -37,6 +37,13 @@ func (service AuthService) Signup(authUser models.AuthUser) error {
 		Email:    strings.ToLower(authUser.Email),
 		Username: authUser.Email,
 		Password: hashedPassword,
+		SavedBooks: models.SavedBooks{
+			models.Reading.ToString():   []uint{},
+			models.Ended.ToString():     []uint{},
+			models.Stopped.ToString():   []uint{},
+			models.Planed.ToString():    []uint{},
+			models.Favorites.ToString(): []uint{},
+		},
 	}
 
 	tx = service.db.Save(&user)

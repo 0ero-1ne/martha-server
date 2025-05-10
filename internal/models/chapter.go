@@ -5,12 +5,12 @@ import (
 )
 
 type Chapter struct {
-	Id        uint      `json:"id"         gorm:"primarykey;not null;constraint:OnDelete:CASCADE,OnUpdate:CASCADE"`
+	Id        uint      `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
-	Title     string    `json:"title"      gorm:"not null;default:null"                                            binding:"required"`
-	Text      string    `json:"text"       gorm:"not null;default:null"`
-	Audio     string    `json:"audio"      gorm:"default:null"`
-	Serial    int       `json:"serial"     gorm:"not null;default:null"                                            binding:"required"`
-	BookId    uint      `json:"book_id"    gorm:"not null;default:null"                                            binding:"required"`
+	Title     string    `json:"title" binding:"required"`
+	Text      string    `json:"text"`
+	Audio     string    `json:"audio"`
+	Serial    int       `json:"serial" binding:"required"`
+	BookId    uint      `json:"book_id" binding:"required"`
 }

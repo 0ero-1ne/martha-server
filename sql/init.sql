@@ -1,32 +1,16 @@
 DROP DATABASE IF EXISTS martha;
 
-CREATE USER martha
+DROP USER IF EXISTS martha_admin;
+
+CREATE USER martha_admin
 WITH
-    ENCRYPTED PASSWORD 'martha';
+    ENCRYPTED PASSWORD '$Am0129$';
 
 CREATE DATABASE martha
 WITH
     OWNER martha_admin ENCODING = 'UTF8' CONNECTION
 LIMIT
-    = -1 TABLESPACE = pg_default LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8' LOCALE_PROVIDER = 'libc' IS_TEMPLATE = FALSE;
-
-DROP TABLE IF EXISTS comment_rates;
-
-DROP TABLE IF EXISTS book_rates;
-
-DROP TABLE IF EXISTS book_tag;
-
-DROP TABLE IF EXISTS book_author;
-
-DROP TABLE IF EXISTS chapters;
-
-DROP TABLE IF EXISTS users;
-
-DROP TABLE IF EXISTS books;
-
-DROP TABLE IF EXISTS tags;
-
-DROP TABLE IF EXISTS authors;
+    = -1 TABLESPACE = pg_default;
 
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY NOT NULL,
@@ -35,7 +19,7 @@ CREATE TABLE users (
     email VARCHAR(320) NOT NULL UNIQUE,
     password VARCHAR(256) NOT NULL,
     username VARCHAR(64) NOT NULL UNIQUE,
-    ROLE VARCHAR(10) NOT NULL DEFAULT 'user',
+    "role" VARCHAR(10) NOT NULL DEFAULT 'user',
     image VARCHAR(256) DEFAULT NULL,
     saved_books JSONB DEFAULT '[]'
 ) TABLESPACE pg_default;
@@ -46,7 +30,7 @@ CREATE TABLE books (
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     title VARCHAR(256) NOT NULL,
     description TEXT NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT '?',
+    status VARCHAR(20) NOT NULL DEFAULT 'Unknown status',
     "year" SMALLINT NOT NULL DEFAULT 0,
     "views" BIGINT NOT NULL DEFAULT 0,
     "cover" VARCHAR(256) DEFAULT NULL
@@ -56,8 +40,8 @@ CREATE TABLE authors (
     id BIGSERIAL PRIMARY KEY NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    fullname VARCHAR(256) NOT NULL DEFAULT 'unknown author',
-    biography TEXT NOT NULL DEFAULT 'unknown',
+    fullname VARCHAR(256) NOT NULL DEFAULT 'Unknown author',
+    biography TEXT NOT NULL DEFAULT 'Unknown biography',
     image VARCHAR(256) DEFAULT NULL
 ) TABLESPACE pg_default;
 
@@ -127,7 +111,7 @@ CREATE TABLE comments_rates (
 
 CREATE OR REPLACE FUNCTION update_modified_column () RETURNS TRIGGER AS $$
 BEGIN
-NEW.updated_at = now();
+NEW.updated_at = NOW();
 RETURN NEW;
 END;
 $$ language 'plpgsql';
