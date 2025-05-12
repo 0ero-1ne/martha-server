@@ -22,7 +22,7 @@ type User struct {
 	CommentRates []CommentsRates `json:"comment_rates,omitempty"`
 }
 
-type SavedBooks map[string][]uint
+type SavedBooks map[string]string
 
 func (savedBooks *SavedBooks) Value() (driver.Value, error) {
 	return json.Marshal(savedBooks)
