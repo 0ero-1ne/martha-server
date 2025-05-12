@@ -36,6 +36,10 @@ func (service BookService) GetAll(params models.BookUrlParams) ([]models.Book, e
 		tx = tx.Preload("Chapters")
 	}
 
+	if params.WithBooksRates {
+		tx = tx.Preload("BooksRates")
+	}
+
 	if params.Offset != 0 {
 		tx = tx.Offset(params.Offset)
 	}
@@ -67,6 +71,10 @@ func (service BookService) GetById(id uint, params models.BookUrlParams) (models
 
 	if params.WithChapters {
 		tx = tx.Preload("Chapters")
+	}
+
+	if params.WithBooksRates {
+		tx = tx.Preload("BooksRates")
 	}
 
 	tx = tx.First(&book, id)

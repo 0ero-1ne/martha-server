@@ -15,5 +15,5 @@ func userRouter(
 ) {
 	router := globalRoute.Group("/users")
 	router.GET("/single", middlewares.IsAuth(jwtManager), controller.GetById)
-	router.POST("/", middlewares.IsAuth(jwtManager), controller.Update)
+	router.POST("", middlewares.IsAuth(jwtManager), controller.Update)
 }

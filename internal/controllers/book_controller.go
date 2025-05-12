@@ -21,10 +21,11 @@ func NewBookController(service services.BookService) BookController {
 
 func (controller BookController) GetAll(ctx *gin.Context) {
 	params := models.BookUrlParams{
-		WithTags:     len(ctx.Query("withTags")) != 0,
-		WithAuthors:  len(ctx.Query("withAuthors")) != 0,
-		WithComments: len(ctx.Query("withComments")) != 0,
-		WithChapters: len(ctx.Query("withChapters")) != 0,
+		WithTags:       len(ctx.Query("withTags")) != 0,
+		WithAuthors:    len(ctx.Query("withAuthors")) != 0,
+		WithComments:   len(ctx.Query("withComments")) != 0,
+		WithChapters:   len(ctx.Query("withChapters")) != 0,
+		WithBooksRates: len(ctx.Query("withBooksRates")) != 0,
 	}
 	books, err := controller.service.GetAll(params)
 	if err != nil {
@@ -39,10 +40,11 @@ func (controller BookController) GetById(ctx *gin.Context) {
 	bookId := ctx.GetUint("book_id")
 
 	params := models.BookUrlParams{
-		WithTags:     len(ctx.Query("withTags")) != 0,
-		WithAuthors:  len(ctx.Query("withAuthors")) != 0,
-		WithComments: len(ctx.Query("withComments")) != 0,
-		WithChapters: len(ctx.Query("withChapters")) != 0,
+		WithTags:       len(ctx.Query("withTags")) != 0,
+		WithAuthors:    len(ctx.Query("withAuthors")) != 0,
+		WithComments:   len(ctx.Query("withComments")) != 0,
+		WithChapters:   len(ctx.Query("withChapters")) != 0,
+		WithBooksRates: len(ctx.Query("withBooksRates")) != 0,
 	}
 
 	book, err := controller.service.GetById(bookId, params)

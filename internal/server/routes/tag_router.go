@@ -9,9 +9,9 @@ import (
 
 func tagRouter(globalRoute *gin.RouterGroup, controller controllers.TagController) {
 	routes := globalRoute.Group("/tags")
-	routes.GET("/", controller.GetAll)
+	routes.GET("", controller.GetAll)
 	routes.GET("/:tag_id", middlewares.ParseParamsId([]string{"tag_id"}), controller.GetById)
-	routes.POST("/", controller.Create)
+	routes.POST("", controller.Create)
 	routes.PUT("/:tag_id", middlewares.ParseParamsId([]string{"tag_id"}), controller.Update)
 	routes.DELETE("/:tag_id", middlewares.ParseParamsId([]string{"tag_id"}), controller.Delete)
 

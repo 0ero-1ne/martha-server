@@ -10,7 +10,7 @@ import (
 
 func chapterRouter(globalRoute *gin.RouterGroup, controller controllers.ChapterController, jwtManager utils.JWTManager) {
 	routes := globalRoute.Group("/chapters")
-	routes.GET("/", controller.GetAll)
+	routes.GET("", controller.GetAll)
 	routes.GET(
 		"/:chapter_id",
 		middlewares.IsAuth(jwtManager),
@@ -22,7 +22,7 @@ func chapterRouter(globalRoute *gin.RouterGroup, controller controllers.ChapterC
 		middlewares.ParseParamsId([]string{"book_id"}),
 		controller.GetChaptersByBookId,
 	)
-	routes.POST("/", controller.Create)
+	routes.POST("", controller.Create)
 	routes.PUT("/:chapter_id", middlewares.ParseParamsId([]string{"chapter_id"}), controller.Update)
 	routes.DELETE(
 		"/:chapter_id",

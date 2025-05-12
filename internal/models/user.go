@@ -8,18 +8,18 @@ import (
 )
 
 type User struct {
-	Id           uint          `json:"id"`
-	CreatedAt    time.Time     `json:"created_at"`
-	UpdatedAt    time.Time     `json:"updated_at"`
-	Email        string        `json:"email"`
-	Password     string        `json:"-"`
-	Username     string        `json:"username"`
-	Image        string        `json:"image"`
-	Role         string        `json:"role"`
-	SavedBooks   SavedBooks    `json:"saved_books"`
-	Comments     []Comment     `json:"comments,omitempty"`
-	BookRates    []BookRate    `json:"book_rates,omitempty"`
-	CommentRates []CommentRate `json:"comment_rates,omitempty"`
+	Id           uint            `json:"id"`
+	CreatedAt    time.Time       `json:"created_at"`
+	UpdatedAt    time.Time       `json:"updated_at"`
+	Email        string          `json:"email"`
+	Password     string          `json:"-"`
+	Username     string          `json:"username"`
+	Image        string          `json:"image"`
+	Role         string          `json:"role"`
+	SavedBooks   SavedBooks      `json:"saved_books"`
+	Comments     []Comment       `json:"comments,omitempty"`
+	BookRates    []BooksRates    `json:"book_rates,omitempty"`
+	CommentRates []CommentsRates `json:"comment_rates,omitempty"`
 }
 
 type SavedBooks map[string][]uint

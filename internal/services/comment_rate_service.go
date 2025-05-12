@@ -17,21 +17,21 @@ func NewCommentRateService(db *gorm.DB) CommentRateService {
 	}
 }
 
-func (service CommentRateService) GetAll() ([]models.CommentRate, error) {
-	var commentRates []models.CommentRate
+func (service CommentRateService) GetAll() ([]models.CommentsRates, error) {
+	var commentRates []models.CommentsRates
 	tx := service.db.Find(&commentRates)
 
 	return commentRates, tx.Error
 }
 
-func (service CommentRateService) Create(commentRate models.CommentRate) (models.CommentRate, error) {
+func (service CommentRateService) Create(commentRate models.CommentsRates) (models.CommentsRates, error) {
 	tx := service.db.Save(&commentRate)
 
 	return commentRate, tx.Error
 }
 
-func (service CommentRateService) Update(newCommentRate models.CommentRate) (models.CommentRate, error) {
-	var commentRate models.CommentRate
+func (service CommentRateService) Update(newCommentRate models.CommentsRates) (models.CommentsRates, error) {
+	var commentRate models.CommentsRates
 	tx := service.db.
 		Where("user_id = ?", newCommentRate.UserId).
 		Where("comment_id = ?", newCommentRate.CommentId).
@@ -48,7 +48,7 @@ func (service CommentRateService) Update(newCommentRate models.CommentRate) (mod
 	return commentRate, tx.Error
 }
 
-func (service CommentRateService) Delete(commentRate models.CommentRate) error {
+func (service CommentRateService) Delete(commentRate models.CommentsRates) error {
 	tx := service.db.Delete(&commentRate)
 	if tx.RowsAffected == 0 {
 		return errors.New("CommentRate not found")

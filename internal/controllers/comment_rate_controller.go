@@ -29,7 +29,7 @@ func (controller CommentRateController) GetAll(ctx *gin.Context) {
 }
 
 func (controller CommentRateController) Create(ctx *gin.Context) {
-	var commentRate models.CommentRate
+	var commentRate models.CommentsRates
 	if err := ctx.ShouldBindJSON(&commentRate); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -50,7 +50,7 @@ func (controller CommentRateController) Create(ctx *gin.Context) {
 }
 
 func (controller CommentRateController) Update(ctx *gin.Context) {
-	var commentRate models.CommentRate
+	var commentRate models.CommentsRates
 	if err := ctx.ShouldBindJSON(&commentRate); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -71,7 +71,7 @@ func (controller CommentRateController) Update(ctx *gin.Context) {
 }
 
 func (controller CommentRateController) Delete(ctx *gin.Context) {
-	var commentRate models.CommentRate
+	var commentRate models.CommentsRates
 	if err := ctx.ShouldBindJSON(&commentRate); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return

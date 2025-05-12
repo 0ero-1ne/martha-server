@@ -10,14 +10,14 @@ import (
 func commentRateRouter(globalRoute *gin.RouterGroup, controller controllers.CommentRateController, jwtManager utils.JWTManager) {
 	routes := globalRoute.Group("comment_rates")
 
-	routes.GET("/", controller.GetAll)
-	routes.POST("/",
+	routes.GET("", controller.GetAll)
+	routes.POST("",
 		middlewares.IsAuth(jwtManager),
 		controller.Create)
-	routes.PUT("/",
+	routes.PUT("",
 		middlewares.IsAuth(jwtManager),
 		controller.Update)
-	routes.DELETE("/",
+	routes.DELETE("",
 		middlewares.IsAuth(jwtManager),
 		controller.Delete)
 }

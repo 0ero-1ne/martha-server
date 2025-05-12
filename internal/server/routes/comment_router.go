@@ -10,11 +10,11 @@ import (
 func commentRouter(globalRoute *gin.RouterGroup, controller controllers.CommentController, jwtManager utils.JWTManager) {
 	routes := globalRoute.Group("/comments")
 
-	routes.GET("/", controller.GetAll)
+	routes.GET("", controller.GetAll)
 	routes.GET("/:comment_id",
 		middlewares.ParseParamsId([]string{"comment_id"}),
 		controller.GetById)
-	routes.POST("/",
+	routes.POST("",
 		middlewares.IsAuth(jwtManager),
 		controller.Create)
 	routes.PUT("/:comment_id",

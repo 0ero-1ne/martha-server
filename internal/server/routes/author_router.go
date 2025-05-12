@@ -9,9 +9,9 @@ import (
 
 func authorRouter(globalRoute *gin.RouterGroup, controller controllers.AuthorController) {
 	routes := globalRoute.Group("/authors")
-	routes.GET("/", controller.GetAll)
+	routes.GET("", controller.GetAll)
 	routes.GET("/:author_id", middlewares.ParseParamsId([]string{"author_id"}), controller.GetById)
-	routes.POST("/", controller.Create)
+	routes.POST("", controller.Create)
 	routes.PUT("/:author_id", middlewares.ParseParamsId([]string{"author_id"}), controller.Update)
 	routes.DELETE(
 		"/:author_id",
