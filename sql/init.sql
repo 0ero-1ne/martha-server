@@ -73,7 +73,7 @@ CREATE TABLE chapters (
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     title VARCHAR(256) NOT NULL,
-    number SMALLINT NOT NULL,
+    serial SMALLINT NOT NULL,
     "text" VARCHAR(256) DEFAULT NULL,
     "audio" VARCHAR(256) DEFAULT NULL,
     book_id BIGINT NOT NULL,
