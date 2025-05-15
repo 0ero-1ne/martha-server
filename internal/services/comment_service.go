@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/0ero-1ne/martha-server/internal/models"
 	"gorm.io/gorm"
 )
@@ -51,12 +53,16 @@ func (service CommentService) Update(commentId uint, newComment models.Comment) 
 	return comment, tx.Error
 }
 
-func (service CommentService) Delete(commentId uint) error {
+func (service CommentService) Delete(commentId uint, userId uint) error {
 	var comment models.Comment
 	tx := service.db.First(&comment, commentId)
 
 	if tx.Error != nil {
 		return tx.Error
+	}
+
+	if comment.UserId != userId {
+		return errors.New("you have no right to delete this comment")
 	}
 
 	tx = service.db.Delete(&comment)

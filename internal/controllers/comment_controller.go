@@ -76,8 +76,9 @@ func (controller CommentController) Update(ctx *gin.Context) {
 
 func (controller CommentController) Delete(ctx *gin.Context) {
 	commentId := ctx.GetUint("comment_id")
+	userId := ctx.GetUint("user_id")
 
-	err := controller.service.Delete(commentId)
+	err := controller.service.Delete(commentId, userId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
