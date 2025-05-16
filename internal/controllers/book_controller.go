@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -26,6 +27,8 @@ func (controller BookController) GetAll(ctx *gin.Context) {
 		WithComments:   len(ctx.Query("withComments")) != 0,
 		WithChapters:   len(ctx.Query("withChapters")) != 0,
 		WithBooksRates: len(ctx.Query("withBooksRates")) != 0,
+		Query:          strings.TrimSpace(ctx.Query("query")),
+		Tags:           strings.TrimSpace(ctx.Query("tags")),
 	}
 	books, err := controller.service.GetAll(params)
 	if err != nil {

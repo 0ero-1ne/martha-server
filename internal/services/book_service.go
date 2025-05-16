@@ -1,9 +1,12 @@
 package services
 
 import (
+	"strings"
+
 	"gorm.io/gorm"
 
 	"github.com/0ero-1ne/martha-server/internal/models"
+	"github.com/0ero-1ne/martha-server/internal/utils"
 )
 
 type BookService struct {
@@ -48,7 +51,20 @@ func (service BookService) GetAll(params models.BookUrlParams) ([]models.Book, e
 		tx = tx.Limit(params.Limit)
 	}
 
+	if len(params.Query) != 0 {
+		tx = tx.Where("lower(title) LIKE lower(?)", "%"+params.Query+"%")
+	}
+
+	if len(params.Tags) != 0 {
+		tx = tx.Preload("Tags", "title in (?)", strings.Split(params.Tags, ","))
+	}
+
 	tx = tx.Find(&books)
+	if len(params.Tags) != 0 {
+		books = utils.Filter(books, func(book models.Book) bool {
+			return len(book.Tags) != 0
+		})
+	}
 
 	return books, tx.Error
 }

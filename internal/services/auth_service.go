@@ -25,12 +25,12 @@ func (service AuthService) Signup(authUser models.AuthUser) error {
 	tx := service.db.First(&models.User{}, "email = ?", authUser.Email)
 
 	if tx.Error == nil {
-		return fmt.Errorf("Email %s already in use", authUser.Email)
+		return fmt.Errorf("email %s already in use", authUser.Email)
 	}
 
 	hashedPassword, err := hashPassword(authUser.Password)
 	if err != nil {
-		return errors.New("Sign up error. Try again later")
+		return errors.New("sign up error. Try again later")
 	}
 
 	user := models.User{

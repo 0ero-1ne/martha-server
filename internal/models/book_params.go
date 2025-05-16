@@ -8,4 +8,6 @@ type BookUrlParams struct {
 	WithComments   bool
 	WithChapters   bool
 	WithBooksRates bool
+	Query          string
+	Tags           string
 }
