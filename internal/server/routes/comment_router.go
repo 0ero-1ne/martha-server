@@ -19,6 +19,7 @@ func commentRouter(globalRoute *gin.RouterGroup, controller controllers.CommentC
 		controller.Create)
 	routes.PUT("/:comment_id",
 		middlewares.ParseParamsId([]string{"comment_id"}),
+		middlewares.IsAuth(jwtManager),
 		controller.Update)
 	routes.DELETE("/:comment_id",
 		middlewares.ParseParamsId([]string{"comment_id"}),

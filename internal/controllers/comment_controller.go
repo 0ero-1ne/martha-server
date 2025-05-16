@@ -58,14 +58,15 @@ func (controller CommentController) Create(ctx *gin.Context) {
 
 func (controller CommentController) Update(ctx *gin.Context) {
 	commentId := ctx.GetUint("comment_id")
-	var comment models.Comment
+	userId := ctx.GetUint("user_id")
 
+	var comment models.Comment
 	if err := ctx.ShouldBindJSON(&comment); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	upatedComment, err := controller.service.Update(commentId, comment)
+	upatedComment, err := controller.service.Update(commentId, comment, userId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return

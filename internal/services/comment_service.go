@@ -36,12 +36,21 @@ func (service CommentService) Create(comment models.Comment) (models.Comment, er
 	return comment, tx.Error
 }
 
-func (service CommentService) Update(commentId uint, newComment models.Comment) (models.Comment, error) {
+func (service CommentService) Update(commentId uint, newComment models.Comment, userId uint) (models.Comment, error) {
 	var comment models.Comment
-
-	tx := service.db.First(&comment, commentId)
+	tx := service.db.Preload("Rates").Preload("User").First(&comment, commentId)
 	if tx.Error != nil {
 		return comment, tx.Error
+	}
+
+	var user models.User
+	tx = service.db.First(&user, userId)
+	if tx.Error != nil {
+		return comment, errors.New("you have no right to update this comment")
+	}
+
+	if comment.UserId != userId && (user.Role != "moderator" && user.Role != "admin") {
+		return comment, errors.New("you have no right to update this comment")
 	}
 
 	comment.Text = newComment.Text
@@ -61,7 +70,13 @@ func (service CommentService) Delete(commentId uint, userId uint) error {
 		return tx.Error
 	}
 
-	if comment.UserId != userId {
+	var user models.User
+	tx = service.db.First(&user, userId)
+	if tx.Error != nil {
+		return errors.New("you have no right to delete this comment")
+	}
+
+	if comment.UserId != userId && (user.Role != "moderator" && user.Role != "admin") {
 		return errors.New("you have no right to delete this comment")
 	}
 

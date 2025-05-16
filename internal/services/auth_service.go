@@ -37,6 +37,7 @@ func (service AuthService) Signup(authUser models.AuthUser) error {
 		Email:    strings.ToLower(authUser.Email),
 		Username: authUser.Email,
 		Password: hashedPassword,
+		Role:     "user",
 		SavedBooks: models.SavedBooks{
 			models.Reading.ToString():   "",
 			models.Ended.ToString():     "",
