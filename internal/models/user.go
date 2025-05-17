@@ -23,10 +23,11 @@ type User struct {
 }
 
 type SavedBook struct {
-	BookId    uint   `json:"book_id"`
-	ChapterId uint   `json:"chapter_id"`
-	Page      int    `json:"page"`
-	Audio     uint64 `json:"audio"`
+	BookId        uint   `json:"book_id"`
+	ReaderChapter uint   `json:"reader_chapter"`
+	Page          int    `json:"page"`
+	AudioChapter  uint   `json:"audio_chapter"`
+	Audio         uint64 `json:"audio"`
 }
 
 type SavedBooks map[BookFolder][]SavedBook
