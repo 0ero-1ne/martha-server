@@ -39,11 +39,11 @@ func (service AuthService) Signup(authUser models.AuthUser) error {
 		Password: hashedPassword,
 		Role:     "user",
 		SavedBooks: models.SavedBooks{
-			models.Reading.ToString():   "",
-			models.Ended.ToString():     "",
-			models.Stopped.ToString():   "",
-			models.Planed.ToString():    "",
-			models.Favorites.ToString(): "",
+			models.Reading:   []models.SavedBook{},
+			models.Ended:     []models.SavedBook{},
+			models.Stopped:   []models.SavedBook{},
+			models.Planed:    []models.SavedBook{},
+			models.Favorites: []models.SavedBook{},
 		},
 	}
 

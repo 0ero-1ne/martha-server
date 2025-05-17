@@ -22,7 +22,14 @@ type User struct {
 	CommentRates []CommentsRates `json:"comment_rates,omitempty"`
 }
 
-type SavedBooks map[string]string
+type SavedBook struct {
+	BookId    uint   `json:"book_id"`
+	ChapterId uint   `json:"chapter_id"`
+	Page      int    `json:"page"`
+	Audio     uint64 `json:"audio"`
+}
+
+type SavedBooks map[BookFolder][]SavedBook
 
 func (savedBooks *SavedBooks) Value() (driver.Value, error) {
 	return json.Marshal(savedBooks)
@@ -37,29 +44,12 @@ func (savedBooks *SavedBooks) Scan(value any) error {
 	return json.Unmarshal(content, &savedBooks)
 }
 
-type BookFolder int
-
-func (bookFolder BookFolder) ToString() string {
-	switch bookFolder {
-	case Reading:
-		return "Reading"
-	case Ended:
-		return "Ended"
-	case Stopped:
-		return "Stopped"
-	case Planed:
-		return "Planed"
-	case Favorites:
-		return "Favorites"
-	default:
-		return ""
-	}
-}
+type BookFolder string
 
 const (
-	Reading BookFolder = iota
-	Ended
-	Stopped
-	Planed
-	Favorites
+	Reading   BookFolder = "Reading"
+	Ended     BookFolder = "Ended"
+	Stopped   BookFolder = "Stopped"
+	Planed    BookFolder = "Planed"
+	Favorites BookFolder = "Favorites"
 )
