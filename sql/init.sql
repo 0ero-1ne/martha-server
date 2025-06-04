@@ -83,7 +83,7 @@ CREATE TABLE chapters (
 CREATE TABLE books_rates (
     book_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
-    rating SMALLINT NOT NULL CHECK (rating BETWEEN 0 AND 5),
+    rating SMALLINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
     CONSTRAINT books_rates_pkey PRIMARY KEY (book_id, user_id),
     CONSTRAINT fk_books_rates_book FOREIGN KEY (book_id) REFERENCES books (id) MATCH SIMPLE ON DELETE CASCADE,
     CONSTRAINT fk_books_rates_user FOREIGN KEY (user_id) REFERENCES users (id) MATCH SIMPLE ON DELETE CASCADE
