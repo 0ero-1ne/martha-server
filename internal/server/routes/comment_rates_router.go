@@ -17,7 +17,8 @@ func commentRateRouter(globalRoute *gin.RouterGroup, controller controllers.Comm
 	routes.PUT("",
 		middlewares.IsAuth(jwtManager),
 		controller.Update)
-	routes.DELETE("",
+	routes.DELETE("/:comment_id/:comment_user_id",
 		middlewares.IsAuth(jwtManager),
+		middlewares.ParseParamsId([]string{"comment_id", "comment_user_id"}),
 		controller.Delete)
 }

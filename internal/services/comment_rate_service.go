@@ -25,7 +25,8 @@ func (service CommentRateService) GetAll() ([]models.CommentsRates, error) {
 }
 
 func (service CommentRateService) Create(commentRate models.CommentsRates) (models.CommentsRates, error) {
-	tx := service.db.Save(&commentRate)
+	commentRate.User = models.User{}
+	tx := service.db.Create(&commentRate)
 
 	return commentRate, tx.Error
 }
@@ -33,23 +34,23 @@ func (service CommentRateService) Create(commentRate models.CommentsRates) (mode
 func (service CommentRateService) Update(newCommentRate models.CommentsRates) (models.CommentsRates, error) {
 	var commentRate models.CommentsRates
 	tx := service.db.
-		Where("user_id = ?", newCommentRate.UserId).
-		Where("comment_id = ?", newCommentRate.CommentId).
+		Where("user_id = ? and comment_id = ?", newCommentRate.UserId, newCommentRate.CommentId).
 		Find(&commentRate)
 
 	if tx.Error != nil {
 		return newCommentRate, tx.Error
 	}
 
-	commentRate.Rating = newCommentRate.Rating
+	tx = service.db.Model(&models.CommentsRates{}).
+		Where("user_id = ? and comment_id = ?", commentRate.UserId, commentRate.CommentId).
+		Update("rating", newCommentRate.Rating)
 
-	tx = service.db.Save(&commentRate)
-
-	return commentRate, tx.Error
+	return newCommentRate, tx.Error
 }
 
-func (service CommentRateService) Delete(commentRate models.CommentsRates) error {
-	tx := service.db.Delete(&commentRate)
+func (service CommentRateService) Delete(commentId uint, userId uint) error {
+	tx := service.db.Where("comment_id = ? and user_id = ?", commentId, userId).Delete(&models.CommentsRates{})
+
 	if tx.RowsAffected == 0 {
 		return errors.New("CommentRate not found")
 	}

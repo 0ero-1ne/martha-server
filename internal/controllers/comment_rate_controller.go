@@ -71,21 +71,18 @@ func (controller CommentRateController) Update(ctx *gin.Context) {
 }
 
 func (controller CommentRateController) Delete(ctx *gin.Context) {
-	var commentRate models.CommentsRates
-	if err := ctx.ShouldBindJSON(&commentRate); err != nil {
-		ctx.JSON(http.StatusBadRequest, err.Error())
-		return
-	}
+	commentId := ctx.GetUint("comment_id")
+	userId := ctx.GetUint("comment_user_id")
 
-	if commentRate.UserId != ctx.GetUint("user_id") {
+	if userId != ctx.GetUint("user_id") {
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	if err := controller.service.Delete(commentRate); err != nil {
+	if err := controller.service.Delete(commentId, userId); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	ctx.AbortWithStatus(http.StatusOK)
+	ctx.AbortWithStatus(http.StatusNoContent)
 }

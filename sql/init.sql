@@ -103,7 +103,7 @@ CREATE TABLE comments (
 CREATE TABLE comments_rates (
     comment_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
-    rating SMALLINT NOT NULL,
+    rating BOOLEAN NOT NULL,
     CONSTRAINT comments_rates_pkey PRIMARY KEY (comment_id, user_id),
     CONSTRAINT fk_comments_rates_comment FOREIGN KEY (comment_id) REFERENCES comments (id) MATCH SIMPLE ON DELETE CASCADE,
     CONSTRAINT fk_comments_rates_user FOREIGN KEY (user_id) REFERENCES users (id) MATCH SIMPLE ON DELETE CASCADE
