@@ -53,13 +53,11 @@ func (service CommentService) Update(commentId uint, newComment models.Comment, 
 		return comment, errors.New("you have no right to update this comment")
 	}
 
-	comment.Text = newComment.Text
-	comment.BookId = newComment.BookId
-	comment.UserId = newComment.UserId
+	tx = service.db.Model(&models.Comment{}).
+		Where("id = ?", comment.Id).
+		Update("text", newComment.Text)
 
-	tx = service.db.Save(&comment)
-
-	return comment, tx.Error
+	return newComment, tx.Error
 }
 
 func (service CommentService) Delete(commentId uint, userId uint) error {
