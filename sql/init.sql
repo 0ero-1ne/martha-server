@@ -91,13 +91,15 @@ CREATE TABLE books_rates (
 
 CREATE TABLE comments (
     id BIGSERIAL PRIMARY KEY NOT NULL,
+    parent_id BIGINT DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     "text" TEXT NOT NULL,
     book_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
     CONSTRAINT fk_comments_book FOREIGN KEY (book_id) REFERENCES books (id) MATCH SIMPLE ON DELETE CASCADE,
-    CONSTRAINT fk_comments_user FOREIGN KEY (user_id) REFERENCES users (id) MATCH SIMPLE ON DELETE CASCADE
+    CONSTRAINT fk_comments_user FOREIGN KEY (user_id) REFERENCES users (id) MATCH SIMPLE ON DELETE CASCADE,
+    CONSTRAINT fk_comments_parent FOREIGN KEY (parent_id) REFERENCES comments (id) MATCH SIMPLE ON DELETE CASCADE
 ) TABLESPACE pg_default;
 
 CREATE TABLE comments_rates (

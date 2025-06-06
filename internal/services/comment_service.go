@@ -32,6 +32,9 @@ func (service CommentService) GetById(commentId uint) (models.Comment, error) {
 }
 
 func (service CommentService) Create(comment models.Comment) (models.Comment, error) {
+	if *comment.ParentId == 0 {
+		comment.ParentId = nil
+	}
 	tx := service.db.Create(&comment)
 	return comment, tx.Error
 }
@@ -88,11 +91,17 @@ func (service CommentService) Delete(commentId uint, userId uint) error {
 func (service CommentService) GetAllByBookId(bookId uint) ([]models.Comment, error) {
 	var comments []models.Comment
 	tx := service.db.
+		Model(&models.Comment{}).
+		Where("book_id = ? and parent_id is null", bookId).
+		Preload("User").
 		Preload("Rates").
 		Preload("Rates.User").
-		Preload("User").
-		Where("book_id = ?", bookId).
+		Preload("Replies", preloadReplies).
 		Find(&comments)
 
 	return comments, tx.Error
+}
+
+func preloadReplies(d *gorm.DB) *gorm.DB {
+	return d.Preload("User").Preload("Rates.User").Preload("Replies", preloadReplies)
 }
