@@ -17,9 +17,13 @@ func NewCommentService(db *gorm.DB) CommentService {
 	}
 }
 
-func (service CommentService) GetAll() ([]models.Comment, error) {
+func (service CommentService) GetAll(userId uint) ([]models.Comment, error) {
 	var comments []models.Comment
-	tx := service.db.Find(&comments)
+	tx := service.db
+	if userId != 0 {
+		tx = tx.Where("user_id = ?", userId).Preload("Rates")
+	}
+	tx = tx.Find(&comments)
 
 	return comments, tx.Error
 }

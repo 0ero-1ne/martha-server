@@ -51,7 +51,7 @@ func registerAuthRouter(
 	service services.AuthService,
 	jwtManager utils.JWTManager,
 ) {
-	authRouter(globalRoute, controllers.NewAuthController(service, jwtManager))
+	authRouter(globalRoute, controllers.NewAuthController(service, jwtManager), jwtManager)
 }
 
 func registerUserRouter(

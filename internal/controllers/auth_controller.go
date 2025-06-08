@@ -106,6 +106,25 @@ func (controller AuthController) Refresh(ctx *gin.Context) {
 	})
 }
 
+func (controller AuthController) ChangePassword(ctx *gin.Context) {
+	userId := ctx.GetUint("user_id")
+
+	var authPasswords models.AuthPasswords
+	if err := ctx.ShouldBindJSON(&authPasswords); err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err := controller.service.ChangePassword(authPasswords, userId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		ctx.Abort()
+		return
+	}
+
+	ctx.JSON(http.StatusOK, "Success")
+}
+
 func checkPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil

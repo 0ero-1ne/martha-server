@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/0ero-1ne/martha-server/internal/models"
 	"github.com/0ero-1ne/martha-server/internal/services"
@@ -19,7 +20,9 @@ func NewCommentController(service services.CommentService) CommentController {
 }
 
 func (controller CommentController) GetAll(ctx *gin.Context) {
-	comments, err := controller.service.GetAll()
+	userId, _ := strconv.ParseUint(ctx.Query("user_id"), 10, 64)
+	comments, err := controller.service.GetAll(uint(userId))
+
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return
