@@ -5,12 +5,14 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/0ero-1ne/martha-server/internal/controllers"
+	"github.com/0ero-1ne/martha-server/internal/middlewares"
 	"github.com/0ero-1ne/martha-server/internal/services"
 	"github.com/0ero-1ne/martha-server/internal/utils"
 )
 
 func NewRouter(db *gorm.DB, jwtManager utils.JWTManager) *gin.Engine {
 	router := gin.Default()
+	router.Use(middlewares.CORSMiddleware())
 	apiRoute := router.Group("/api")
 
 	registerTagRouter(apiRoute, services.NewTagService(db))
