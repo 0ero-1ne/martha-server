@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"strings"
 
 	"gorm.io/gorm"
@@ -17,6 +18,15 @@ func NewBookService(db *gorm.DB) BookService {
 	return BookService{
 		db: db,
 	}
+}
+
+func (service BookService) GetCount() int {
+	var count int64
+	tx := service.db.Model(&models.Book{}).Count(&count)
+	if tx.Error != nil {
+		return 0
+	}
+	return int(count)
 }
 
 func (service BookService) GetAll(params models.BookUrlParams) ([]models.Book, error) {
@@ -99,7 +109,43 @@ func (service BookService) GetById(id uint, params models.BookUrlParams) (models
 }
 
 func (service BookService) Create(book models.Book) (models.Book, error) {
-	tx := service.db.Create(&book)
+	tx := service.db
+	var tags []*models.Tag
+	var authors []*models.Author
+
+	if len(book.Tags) != 0 {
+		for _, v := range book.Tags {
+			var tag models.Tag
+			tagResult := tx.Where("title = ?", v.Title).First(&tag)
+			if tagResult.Error != nil {
+				tag = *v
+				if createResult := tx.Create(&tag); createResult.Error != nil {
+					return book, createResult.Error
+				}
+			}
+			tags = append(tags, &tag)
+		}
+		book.Tags = tags
+	}
+
+	if len(book.Authors) != 0 {
+		for _, v := range book.Authors {
+			var author models.Author
+			authorResult := tx.Where("fullname = ?", v.Fullname).First(&author)
+			if authorResult.Error != nil {
+				author = *v
+				author.Biography = author.Fullname
+				author.Image = author.Fullname
+				if createResult := tx.Create(&author); createResult.Error != nil {
+					return book, createResult.Error
+				}
+			}
+			authors = append(authors, &author)
+		}
+		book.Authors = authors
+	}
+
+	tx = service.db.Save(&book)
 
 	if tx.Error != nil {
 		return book, tx.Error
@@ -110,10 +156,45 @@ func (service BookService) Create(book models.Book) (models.Book, error) {
 
 func (service BookService) Update(id uint, newBook models.Book) (models.Book, error) {
 	var book models.Book
-	tx := service.db.First(&book, id)
+	tx := service.db.Preload("Tags").First(&book, id)
 
 	if tx.Error != nil {
 		return book, tx.Error
+	}
+
+	var tags []*models.Tag
+	var authors []*models.Author
+
+	if len(newBook.Tags) != 0 {
+		for _, v := range newBook.Tags {
+			var tag models.Tag
+			tagResult := service.db.Where("title = ?", v.Title).First(&tag)
+			if tagResult.Error != nil {
+				tag = *v
+				if createResult := service.db.Create(&tag); createResult.Error != nil {
+					return book, createResult.Error
+				}
+			}
+			tags = append(tags, &tag)
+		}
+		service.db.Model(&book).Association("Tags").Replace(tags)
+	}
+
+	if len(newBook.Authors) != 0 {
+		for _, v := range newBook.Authors {
+			var author models.Author
+			authorResult := service.db.Where("fullname = ?", v.Fullname).First(&author)
+			if authorResult.Error != nil {
+				author = *v
+				author.Biography = author.Fullname
+				author.Image = author.Fullname
+				if createResult := service.db.Create(&author); createResult.Error != nil {
+					return book, createResult.Error
+				}
+			}
+			authors = append(authors, &author)
+		}
+		service.db.Model(&book).Association("Authors").Replace(authors)
 	}
 
 	book.Title = newBook.Title
@@ -122,6 +203,8 @@ func (service BookService) Update(id uint, newBook models.Book) (models.Book, er
 	book.Year = newBook.Year
 	book.Views = newBook.Views
 	book.Cover = newBook.Cover
+
+	fmt.Println(book)
 
 	tx = service.db.Save(&book)
 

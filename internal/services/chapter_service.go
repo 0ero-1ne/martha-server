@@ -16,9 +16,28 @@ func NewChapterService(db *gorm.DB) ChapterService {
 	}
 }
 
-func (service ChapterService) GetAll() ([]models.Chapter, error) {
+func (service ChapterService) GetCount() int {
+	var count int64
+	tx := service.db.Model(&models.Chapter{}).Count(&count)
+	if tx.Error != nil {
+		return 0
+	}
+	return int(count)
+}
+
+func (service ChapterService) GetAll(params models.BookUrlParams) ([]models.Chapter, error) {
 	var chapters []models.Chapter
-	tx := service.db.Find(&chapters)
+	tx := service.db
+
+	if params.Offset != 0 {
+		tx = tx.Offset(params.Offset)
+	}
+
+	if params.Limit != 0 {
+		tx = tx.Limit(params.Limit)
+	}
+
+	tx = tx.Order("book_id, serial").Find(&chapters)
 
 	if tx.Error != nil {
 		return nil, tx.Error

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -19,8 +20,23 @@ func NewChapterController(service services.ChapterService) ChapterController {
 	}
 }
 
+func (controller ChapterController) GetCount(ctx *gin.Context) {
+	count := controller.service.GetCount()
+	ctx.AbortWithStatusJSON(http.StatusOK, count)
+}
+
 func (controller ChapterController) GetAll(ctx *gin.Context) {
-	chapters, err := controller.service.GetAll()
+	params := models.BookUrlParams{}
+
+	if offset, offsetErr := strconv.ParseInt(ctx.Query("offset"), 10, 32); offsetErr == nil {
+		params.Offset = int(offset)
+	}
+
+	if limit, limitErr := strconv.ParseInt(ctx.Query("limit"), 10, 32); limitErr == nil {
+		params.Limit = int(limit)
+	}
+
+	chapters, err := controller.service.GetAll(params)
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return

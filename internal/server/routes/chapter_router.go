@@ -10,6 +10,8 @@ import (
 
 func chapterRouter(globalRoute *gin.RouterGroup, controller controllers.ChapterController, jwtManager utils.JWTManager) {
 	routes := globalRoute.Group("/chapters")
+
+	routes.GET("/count", controller.GetCount)
 	routes.GET("", controller.GetAll)
 	routes.GET(
 		"/:chapter_id",

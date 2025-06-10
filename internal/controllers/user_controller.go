@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -17,6 +18,49 @@ func NewUserController(service services.UserService) UserController {
 	return UserController{
 		service: service,
 	}
+}
+
+func (controller UserController) GetCount(ctx *gin.Context) {
+	count := controller.service.GetCount()
+	ctx.AbortWithStatusJSON(http.StatusOK, count)
+}
+
+func (controller UserController) GetAll(ctx *gin.Context) {
+	params := models.BookUrlParams{}
+
+	if offset, offsetErr := strconv.ParseInt(ctx.Query("offset"), 10, 32); offsetErr == nil {
+		params.Offset = int(offset)
+	}
+
+	if limit, limitErr := strconv.ParseInt(ctx.Query("limit"), 10, 32); limitErr == nil {
+		params.Limit = int(limit)
+	}
+
+	users, err := controller.service.GetAll(params)
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, users)
+}
+
+func (controller UserController) MakeModer(ctx *gin.Context) {
+	userId := ctx.GetUint("user_id")
+	if err := controller.service.MakeModer(uint(userId)); err != nil {
+		ctx.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	ctx.AbortWithStatus(http.StatusOK)
+}
+
+func (controller UserController) MakeUser(ctx *gin.Context) {
+	userId := ctx.GetUint("user_id")
+	if err := controller.service.MakeUser(uint(userId)); err != nil {
+		ctx.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	ctx.AbortWithStatus(http.StatusOK)
 }
 
 func (controller UserController) GetById(ctx *gin.Context) {

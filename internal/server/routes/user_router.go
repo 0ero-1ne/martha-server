@@ -14,6 +14,10 @@ func userRouter(
 	jwtManager utils.JWTManager,
 ) {
 	router := globalRoute.Group("/users")
+	router.GET("", controller.GetAll)
+	router.GET("/make_moderator/:user_id", middlewares.ParseParamsId([]string{"user_id"}), controller.MakeModer)
+	router.GET("/make_user/:user_id", middlewares.ParseParamsId([]string{"user_id"}), controller.MakeUser)
+	router.GET("/count", controller.GetCount)
 	router.GET("/single", middlewares.IsAuth(jwtManager), controller.GetById)
 	router.POST("", middlewares.IsAuth(jwtManager), controller.Update)
 }

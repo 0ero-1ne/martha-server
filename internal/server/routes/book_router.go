@@ -10,6 +10,7 @@ import (
 func bookRouter(globalRoute *gin.RouterGroup, controller controllers.BookController) {
 	routes := globalRoute.Group("/books")
 	routes.GET("", controller.GetAll)
+	routes.GET("/count", controller.GetCount)
 	routes.GET("/:book_id", middlewares.ParseParamsId([]string{"book_id"}), controller.GetById)
 	routes.POST("", controller.Create)
 	routes.PUT("/:book_id", middlewares.ParseParamsId([]string{"book_id"}), controller.Update)

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,11 @@ func NewBookController(service services.BookService) BookController {
 	}
 }
 
+func (controller BookController) GetCount(ctx *gin.Context) {
+	count := controller.service.GetCount()
+	ctx.AbortWithStatusJSON(http.StatusOK, count)
+}
+
 func (controller BookController) GetAll(ctx *gin.Context) {
 	params := models.BookUrlParams{
 		WithTags:      len(ctx.Query("withTags")) != 0,
@@ -30,6 +36,15 @@ func (controller BookController) GetAll(ctx *gin.Context) {
 		Query:         strings.TrimSpace(ctx.Query("query")),
 		Tags:          strings.TrimSpace(ctx.Query("tags")),
 	}
+
+	if offset, offsetErr := strconv.ParseInt(ctx.Query("offset"), 10, 32); offsetErr == nil {
+		params.Offset = int(offset)
+	}
+
+	if limit, limitErr := strconv.ParseInt(ctx.Query("limit"), 10, 32); limitErr == nil {
+		params.Limit = int(limit)
+	}
+
 	books, err := controller.service.GetAll(params)
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
