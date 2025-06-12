@@ -20,4 +20,5 @@ func userRouter(
 	router.GET("/count", controller.GetCount)
 	router.GET("/single", middlewares.IsAuth(jwtManager), controller.GetById)
 	router.POST("", middlewares.IsAuth(jwtManager), controller.Update)
+	router.DELETE("/:user_id", middlewares.ParseParamsId([]string{"user_id"}), controller.Delete)
 }

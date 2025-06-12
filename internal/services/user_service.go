@@ -94,3 +94,8 @@ func (service UserService) Update(newUser models.User, userId uint) (models.User
 	tx = service.db.Save(&user)
 	return user, tx.Error
 }
+
+func (service UserService) Delete(userId uint) error {
+	tx := service.db.Delete(&models.User{}, userId)
+	return tx.Error
+}

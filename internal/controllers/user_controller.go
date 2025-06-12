@@ -95,3 +95,12 @@ func (controller UserController) Update(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, updatedUser)
 }
+
+func (controller UserController) Delete(ctx *gin.Context) {
+	userId := ctx.GetUint("user_id")
+	if result := controller.service.Delete(uint(userId)); result != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
+		return
+	}
+	ctx.AbortWithStatus(http.StatusNoContent)
+}
