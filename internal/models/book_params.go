@@ -10,4 +10,7 @@ type BookUrlParams struct {
 	WithBookRates bool
 	Query         string
 	Tags          string
+	Statuses      string
+	StartYear     int
+	EndYear       int
 }

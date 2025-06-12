@@ -69,6 +69,18 @@ func (service BookService) GetAll(params models.BookUrlParams) ([]models.Book, e
 		tx = tx.Preload("Tags", "title in (?)", strings.Split(params.Tags, ","))
 	}
 
+	if len(params.Statuses) != 0 {
+		tx.Where("status in (?)", strings.Split(params.Statuses, ","))
+	}
+
+	if params.StartYear != 0 {
+		tx = tx.Where("year >= ?", params.StartYear)
+	}
+
+	if params.EndYear != 0 && params.EndYear > params.StartYear {
+		tx = tx.Where("year <= ?", params.EndYear)
+	}
+
 	tx = tx.Find(&books)
 	if len(params.Tags) != 0 {
 		books = utils.Filter(books, func(book models.Book) bool {

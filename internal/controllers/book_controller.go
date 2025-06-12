@@ -35,6 +35,7 @@ func (controller BookController) GetAll(ctx *gin.Context) {
 		WithBookRates: len(ctx.Query("withBookRates")) != 0,
 		Query:         strings.TrimSpace(ctx.Query("query")),
 		Tags:          strings.TrimSpace(ctx.Query("tags")),
+		Statuses:      strings.TrimSpace(ctx.Query("statuses")),
 	}
 
 	if offset, offsetErr := strconv.ParseInt(ctx.Query("offset"), 10, 32); offsetErr == nil {
@@ -43,6 +44,14 @@ func (controller BookController) GetAll(ctx *gin.Context) {
 
 	if limit, limitErr := strconv.ParseInt(ctx.Query("limit"), 10, 32); limitErr == nil {
 		params.Limit = int(limit)
+	}
+
+	if startYear, startYearErr := strconv.ParseInt(ctx.Query("start_year"), 10, 64); startYearErr == nil {
+		params.StartYear = int(startYear)
+	}
+
+	if endYear, endYearErr := strconv.ParseInt(ctx.Query("end_year"), 10, 64); endYearErr == nil {
+		params.EndYear = int(endYear)
 	}
 
 	books, err := controller.service.GetAll(params)
